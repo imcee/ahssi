@@ -1,0 +1,147 @@
+<!--side Nav-->
+
+{% if user.is_authenticated %}
+    {% load static %}
+    {% if user.is_superuser or user.is_staff %}
+
+        {% url 'dashboard' as dashboard %}
+        {% url 'user_list_view' as user_list_view %}
+        {% url 'bid_list' as bid_list %}
+        {% url 'email_shift' as email_shift %}
+        {% url 'shift_list' as shift_list %}
+        {% url 'savings' as savings %}
+        {% url 'rates' as rates %}
+        {% url 'timesheet' as timesheet %}
+        {% url 'ic_invoice' as ic_invoice %}
+        {% url 'sales_invoice' as sales_invoice %}
+        {% url 'payroll_docs' as payroll_docs %}
+
+        <div class="" id="sidebar">
+            <div class="ng-tns-c280-2">
+                <nav role="navigation" class="tool-list">
+                    <ul class="side-nav " id="side-nav">
+                        <li class="ng-star-inserted">
+                            <a class="tool {% if request.path == dashboard %}tool--active{% endif %}" href="{{ dashboard }}" onclick="selectNav()"><img width="20" src="{% static 'img/dashboard-d-white.png' %}"/>Dashboard</a>
+                        </li>
+                        <li class="ng-star-inserted">
+                            <a class="tool {% if 'memo' in request.path %}tool--active{% endif %}" href="{% url 'memo' id=0 search=None %}"><img width="20" src="{% static 'img/memoicon.png' %}"/>Memo</a>
+                        </li>
+                        <li class="ng-star-inserted">
+                            <a class="tool {% if request.path == user_list_view %}tool--active{% endif %}" href="{{ user_list_view }}"><img width="20" src="{% static 'img/user-d-white.png' %}"/>Staff</a>
+                        </li>
+                        <li class="ng-star-inserted">
+
+                            <a class="tool" href="#shiftSubmenu" data-toggle="collapse" aria-expanded="{% if request.path == bid_list %}true {% elif request.path == email_shift %}true{% elif request.path == shift_list %}true{% elif 'endorsements'  in request.path %}true{% else %}false{% endif %}" class="dropdown-toggle"><img width="20" src="{% static 'img/edit-d-white.png' %}"/>Shift Manager</a>
+                            <ul class="collapse list-unstyled{% if request.path == bid_list %} in show{% elif request.path == email_shift %} in show{% elif request.path == shift_list %} in show{% elif 'endorsements' in request.path %} in show{% else %}{% endif %}" id="shiftSubmenu">
+                                <li>
+                                    <a class="tool {% if request.path == bid_list %}tool--active{% endif %}" href="{{ bid_list }}">Bids List</a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if request.path == shift_list %}tool--active{% endif %}" href="{{ shift_list }}">Shifts List</a>
+                                </li>                            
+                                <li>
+                                    <a class="tool {% if request.path == email_shift %}tool--active{% endif %}" href="{{ email_shift }}">Create Shift </a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if 'endorsements'  in request.path %}tool--active{% endif %}" href="{% url 'endorsements' id=0 date=None %}">Endorsements </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="ng-star-inserted">
+                            <a class="tool" href="#payrollSubmenu" data-toggle="collapse" aria-expanded="{% if 'rates' in request.path %}true {% elif 'savings' in request.path %}true{% elif 'timesheet' in request.path %}true{% elif 'sales' in request.path %}true{% elif 'invoice' in request.path %}true{% elif 'docs' in request.path %}true{% else %}false{% endif %}" class="dropdown-toggle"><img width="20" src="{% static 'img/invoice.png' %}"/>Payroll</a>
+                            <ul class="collapse list-unstyled{% if 'rates' in request.path %} in show{% elif 'savings' in request.path %} in show{% elif 'timesheet' in request.path %} in show{% elif 'sales'  in request.path %} in show{% elif 'invoice' in request.path %} in show{% elif 'docs' in request.path %} in show{% else %}{% endif %}" id="payrollSubmenu">
+                                <li>
+                                    <a class="tool {% if 'rates' in request.path %}tool--active{% endif %}" href="{% url 'rates' option='staff' id=0 %}">Rates</a>
+                                </li> 
+                                <li>
+                                    <a class="tool {% if 'savings' in request.path %}tool--active{% endif %}" href="{{ savings }}">Savings Election</a>
+                                </li>                           
+                                <li>
+                                    <a class="tool {% if 'timesheet' in request.path %}tool--active{% endif %}" href="{{ timesheet }}">Timesheet</a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if request.path == ic_invoice %}tool--active{% endif %}" href="{{ ic_invoice }}">IC Invoice</a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if request.path == sales_invoice %}tool--active{% endif %}" href="{{ sales_invoice }}">Sales Invoice</a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if request.path == payroll_docs %}tool--active{% endif %}" href="{{ payroll_docs }}">Others</a>
+                                </li>
+                            </ul>
+                        </li>                
+                </ul>
+                </nav>
+            </div>
+            <div class="modal-overlay">
+
+            </div>
+            <div class="dateNow">
+                {% now "F j, Y g:i A" %}
+                <span class="tooltiptext">{% now "l, F j, Y" %}<br>{% now "g:i A T" %}</span>
+            </div>
+        </div>
+    {% else %}
+        {% url 'dashboard' as dashboard %}
+        {% url 'bid_list' as bid_list %}
+        {% url 'email_shift' as email_shift %}
+        {% url 'shift_list' as shift_list %}
+        {% url 'savings' as savings %}
+        {% url 'timesheet' as timesheet %}
+        {% url 'ic_invoice' as ic_invoice %}
+        {% url 'payroll_docs' as payroll_docs %}
+
+        <div class="" id="sidebar">
+            <div class="ng-tns-c280-2">
+                <nav role="navigation" class="tool-list">
+                    <ul class="side-nav " id="side-nav">
+                        <li class="ng-star-inserted">
+                            <a class="tool {% if request.path == dashboard %}tool--active{% endif %}" href="{{ dashboard}}" onclick="selectNav()"><img width="20" src="{% static 'img/dashboard-d-white.png' %}"/>Dashboard</a>
+                        </li>
+                        <li class="ng-star-inserted">
+                            <a class="tool {% if 'memo' in request.path %}tool--active{% endif %}" href="{% url 'memo' id=0 search=None %}"><img width="20" src="{% static 'img/user-d-white.png' %}"/>Memo</a>
+                        </li>
+                        <a class="tool" href="#shiftSubmenu" data-toggle="collapse" aria-expanded="{% if request.path == bid_list %}true {% elif request.path == email_shift %}true{% elif request.path == shift_list %}true{% else %}false{% endif %}" class="dropdown-toggle"><img width="20" src="{% static 'img/edit-d-white.png' %}"/>Shift Manager</a>
+                            <ul class="collapse list-unstyled{% if request.path == bid_list %} in show{% elif request.path == email_shift %}in show{% elif request.path == shift_list %} in show{% else %}{% endif %}" id="shiftSubmenu">
+                                <li>
+                                    <a class="tool {% if request.path == bid_list %}tool--active{% endif %}" href="{{ bid_list }}">My Bids</a>
+                                </li>
+                                <li>
+                                    <a class="tool {% if request.path == shift_list %}tool--active{% endif %}" href="{{ shift_list }}">My Shifts</a>
+                                </li> 
+                            </ul>
+
+                            <li class="ng-star-inserted">
+
+                                <a class="tool" href="#payrollSubmenu" data-toggle="collapse" aria-expanded="{% if 'rates' in request.path %}true {% elif 'savings' in request.path %}true{% elif 'timesheet' in request.path %}true{% elif 'sales' in request.path %}true{% elif 'invoice' in request.path %}true{% elif 'docs' in request.path %}true{% else %}false{% endif %}" class="dropdown-toggle"><img width="20" src="{% static 'img/invoice.png' %}"/>Payroll</a>
+                                <ul class="collapse list-unstyled{% if 'savings' in request.path %} in show{% elif 'timesheet' in request.path %} in show{% elif 'invoice' in request.path %} in show{% elif 'docs' in request.path %} in show{% else %}{% endif %}" id="payrollSubmenu">  
+                                    <li>
+                                        <a class="tool {% if 'savings' in request.path %}tool--active{% endif %}" href="{{ savings }}">My Savings</a>
+                                    </li>                      
+                                    <li>
+                                        <a class="tool {% if 'timesheet' in request.path %}tool--active{% endif %}" href="{{ timesheet }}">My Timesheet</a>
+                                    </li>
+                                    <li class="ng-star-inserted">
+                                        <a class="tool {% if request.path == ic_invoice %}tool--active{% endif %}" href="{{ ic_invoice }}">My Invoice</a>
+                                    </li>   
+                                    <li>
+                                        <a class="tool {% if request.path == payroll_docs %}tool--active{% endif %}" href="{{ payroll_docs }}">Others</a>
+                                    </li>
+                                </ul>
+                            </li>
+                </ul>
+                </nav>
+            </div>
+            <div class="modal-overlay">
+
+            </div>                
+            <div class="dateNow">
+                {% now "F j, Y g:i A" %}
+                <span class="tooltiptext">{% now "l, F j, Y" %}<br>{% now "g:i A T" %}</span>
+            </div>
+        </div>
+    <!--Side Nav-->
+    {% endif %}
+{% endif %}
+

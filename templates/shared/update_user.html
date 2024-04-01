@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% block title %} Update User {% endblock %}
+{% block adminContent %}
+{% load static %}
+<style>
+
+    #id_email, #id_first_name, #id_last_name, #id_contact_number, #id_address, #id_registration_no {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+
+    #id_birth_date_month {
+        display: inline-block;
+        width: 25%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_birth_date_day{
+        display: inline-block;
+        width: 10%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_birth_date_year{
+        display: inline-block;
+        width: 15%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_gender {
+        display:flex;
+    }
+
+    #id_gender label{
+        margin-right: 30px;
+    }
+
+    div#id_staff_type {
+        display: flex;
+    }
+    div#id_staff_type label{
+        margin-right: 60px;
+    }
+    div .workspace{
+    padding: 0 20px;
+    }
+
+    @media only screen and (max-width: 750px){
+        #id_staff_type {
+            display: block !important;
+        }
+
+        label {
+            display: block;
+        }
+
+        #id_birth_date_month {
+            display: inline-block;
+            width: 50%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_birth_date_day {
+            display: inline-block;
+            width: 20%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_birth_date_year {
+            display: inline-block;
+            width: 30%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    }
+
+</style>
+{% if user.is_superuser == 0 and user.is_staff == 0 %}
+    <style>
+        div#id_staff_type {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .hideRadio {
+            display: none;
+        }
+    </style>
+
+{% endif %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Update Details</h5>
+        </div>
+        <div class="card-body">
+            {% if user.is_authenticated %}
+            <!-- Create a Form -->
+            <form method="POST" enctype="multipart/form-data">
+                <!-- Security token by Django -->
+                {% csrf_token %}
+                <!-- form as paragraph -->
+                {% for field in update_user_form %}
+                <p>
+
+                    {{field.label_tag}}
+                    {{field}}
+
+                    {% if field.help_text %}
+                    <small style="color:grey;">{{field.help_text}}</small>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <small style="color:red;">{{error}}</small>
+                    {% endfor %}
+
+
+                </p>
+                {% endfor %}
+                <hr>
+                <div class="updateBtn">
+                    <input class="btn btn-success"  type="submit" value="Update" style="float: right;">
+
+                    {% if user.is_superuser or user.is_staff %}
+                        {% if function == 'update_user' %}
+                            <a href=" {% url 'user_list_view' %} "><input type="button" class="btn btn-secondary" name="Cancel" value="Cancel" style="float: right; margin-right: 15px;"></a>
+                        {% else %}
+                            <a href=" {% url 'account' %} "><input type="button" class="btn btn-secondary" name="Cancel" value="Cancel" style="float: right; margin-right: 15px;"></a>
+                        {% endif %}
+                    {% else %}
+                        <a href=" {% url 'account' %} "><input class="btn btn-secondary"  type="button" name="Cancel" value="Cancel" style="float: right; margin-right: 15px;"></a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    var radio = document.querySelectorAll('#id_staff_type div .RadioBtn');
+
+  for (var i=0; i<radio.length; i++){
+    console.log(radio[i].value);
+    if(radio[i].value == 'AHSSI STAFF') {
+      radio[i].classList.add("hideRadio");
+      radio[i].parentNode.classList.add('hideRadio');
+    }
+
+    if(radio[i].value == 'AHSSI ADMIN') {
+      radio[i].classList.add("hideRadio");
+      radio[i].parentNode.classList.add('hideRadio');
+    }
+
+    if(radio[i].value == 'AHSSI PAYROLL') {
+      radio[i].classList.add("hideRadio");
+      radio[i].parentNode.classList.add('hideRadio');
+    }
+  }
+</script>
+
+{% endblock %}

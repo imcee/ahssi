@@ -1,0 +1,212 @@
+<!-- user/user_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Bid Details {% endblock %}
+
+{% block navigation %}
+    {% include 'loggedin_nav.html' %}
+{% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<!--Main Content -->
+<div class="container">
+    <div class="main-body">
+   
+          <div class="row gutters-sm">
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Bid ID</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{bid.bid_id}}
+                        </div>
+                      </div>
+                      <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Bid Status</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.bid_status}}
+                    </div>
+                  </div>
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Facility Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.facility_name_id}}
+                    </div>
+                  </div>            
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Facility Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.facility_address}}
+                    </div>
+                  </div>      
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Date</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.shift_date}}
+                    </div>
+                  </div>  
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Schedule</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.shift_schedule_id}} / {{bid.schedule_time}}
+                    </div>
+                  </div>    
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Designation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.staff_type_id}}
+                    </div>
+                  </div>                    
+                  
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Username</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.username}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.first_name}} {{bid.last_name}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.email_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  {% if bid.bid_status == 'Declined' or bid.bid_status == 'Cancelled' %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Reason</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.reason}}
+                    </div>
+                  </div>
+                  <hr>
+                  {% endif %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Submitted By</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.submitted_by}}
+                    </div>
+                  </div>
+                  <hr>
+                 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Submitted Date</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.submitted_date}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Update By</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.last_update_by}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Update</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{bid.last_update_date}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-12 button">
+                      {% if bid.bid_status == 'New' %}
+                      <a class="btn btn-success user-btn" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}">Confirm</a>
+                      <!--<a class="btn btn-success user-btn" href="{% url 'bid_shift_action' id=bid.bid_id action='Decline' %}">Decline</a>-->
+                      <a class="btn btn-danger user-btn" data-bs-toggle="modal" data-bs-target="#cancelModalToggle">Decline</a> 
+                      {% endif %}
+                      <a class="btn btn-success user-btn" href="{% url 'bid_list' %}">Done</a>
+                    </div>
+                      <!-- Modal -->
+                      <div class="modal fade" id="cancelModalToggle" aria-hidden="true" aria-labelledby="cancelModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalToggleLabel">Decline Bid: {{bid.bid_id}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'bid_shift_action' id=bid.bid_id action='Decline' %}">
+
+                                    <!-- Security token by Django -->
+                                    {% csrf_token %}
+                                    <p><label for="reason">Reason:</label></p>
+                                    <textarea id="reason" name="reason" rows="4" cols="45"></textarea>
+                            
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-success" type="submit" value="Yes" />
+                                <a href="{% url 'view_bid' id=bid.bid_id %}"><input class="btn btn-secondary" type="button" name="No" value="No"></a>
+                            </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+ 
+<!--Main Content-->
+{% endblock %}

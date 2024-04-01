@@ -1,0 +1,212 @@
+<!-- registration/register.html -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"></html>
+{% extends 'base.html' %}
+
+{% block title %} Register {% endblock %}
+
+{% block adminContent %}
+{% load static %}
+<style>
+    #id_email, #id_first_name, #id_last_name, #id_contact_number, #id_address,#id_registration_no {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+
+    #id_birth_date_month {
+        display: inline-block;
+        width: 20%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_birth_date_day{
+        display: inline-block;
+        width: 10%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_birth_date_year{
+        display: inline-block;
+        width: 15%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_gender {
+        display:flex;
+    }
+
+    #id_gender label{
+        margin-right: 30px;
+    }
+
+    div#id_staff_type {
+        display: flex;
+    }
+    div#id_staff_type label{
+        margin-right: 60px;
+    }
+    div .workspace{
+    padding: 0 20px;
+    }
+
+    @media only screen and (max-width: 790px){
+        #id_staff_type {
+            display: block !important;
+        }
+
+        label {
+            display: block;
+        }
+
+        #id_birth_date_month {
+            display: inline-block;
+            width: 50%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_birth_date_day {
+            display: inline-block;
+            width: 20%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_birth_date_year {
+            display: inline-block;
+            width: 30%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    }
+
+</style>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Register Staff</h2>
+        </div>
+        <div class="card-body">
+    
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in registration_form %}
+                    <p>
+            
+                    {% if field.name != 'password1' and field.name != 'password2' %}
+                        {{field.label_tag}}
+                        {{field}}
+                    
+                        {% if field.help_text %}
+                            <small style="color:grey;">{{field.help_text}}</small>
+                        {% endif %}
+            
+                        {% for error in field.errors %}
+                            <small style="color:red;">{{error}}</small>
+                        {% endfor %}
+                    {% endif %}
+            
+                    </p>
+                {% endfor %}
+            
+                <tr><td colspan="2">
+                
+                <p>
+                <button class="btn btn-success" type="submit" style="float: right;">Create</button>
+                <a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel" style="float: right; margin-right: 15px;"></a>
+                </p>
+            </form>
+        
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+</html>

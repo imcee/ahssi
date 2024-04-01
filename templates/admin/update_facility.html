@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% block title %} Update Facility {% endblock %}
+{% block adminContent %}
+{% load static%}
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<style>
+    .setting-active {
+    border-left: 4px solid #92c83e;
+    padding-left: 16px;
+    background: #cfcfcfcf;    
+    }
+    .facility-settings td {
+        font-size: 13px;
+    }
+    .search-form-facility-edit {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 20px;
+        margin-top: 20px;
+    }
+</style>
+<div class="setting-container">
+    <div class="setting-menu">
+        <div class="card" style="width: 20rem;">
+            <div class="card-header"><h5>Settings</h5></div>
+            <ul class="list-group">
+                <a href="{% url 'settings_options' option='staff' %}">
+                <li class="list-group-item">
+                    View Designation
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/>
+                </li> 
+                </a>
+                <a href="{% url 'settings_options' option='facility' %}">
+                <li class="list-group-item setting-active">
+                    View Facility
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='schedule' %}">
+                <li class="list-group-item">
+                    View Schedule
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='reminder' %}">
+                <li class="list-group-item">
+                    View Reminder Settings 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'logs' %}">
+                    <li class="list-group-item">
+                    View Activity Logs 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <div>
+                <form action = "" method="POST">
+                    <div class="search-form-facility-edit">
+                            {% csrf_token %}
+                            {{form }}
+                    </div>
+                    <a href="{% url 'settings_options' option='facility' %}"><input class="btn btn-secondary"  type="button" name="Cancel" value="Cancel" style="float: right; margin-top: 20px;margin-right: 10px;"></a>
+                    <input type="submit" class="btn btn-outline-success settingAddBtn" style="float:right; margin-top: 20px; margin-right: 10px;"  value="Update">
+                    
+                </form>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Facility Code</th>
+                    <th scope="col">Facility Name</th>
+                    <th scope="col">Facility Address</th>
+                    <th scope="col">Facility Schedule</th>
+                </tr>
+                </thead>
+            
+                    <tbody class="facility-settings">
+                   
+                    <tr>
+                        <td>{{data.facility_cd}}</td>
+                        <td>{{data.facility_name}}</td>
+                        <td>{{data.facility_address}}</td>
+                        <td>{{data.schedule_time}}</td>
+                        <td>
+                            <a href="{% url 'settings_remove' option='facility' id=data.facility_cd %}"><img src="{% static 'img/trash.png' %}" alt="Home" title="Home" class="logo"></a>&nbsp;&nbsp;
+                            <a href="{% url 'settings_update' option='facility' id=data.facility_cd %}"><img src="{% static 'img/pencil.png' %}" alt="Edit" title="Edit" class="logo"></a></td>
+                    </tr>
+                    
+   
+                    </tbody>
+            
+            </table>
+        </div>
+
+    </div>
+        
+</div>
+{% endblock %}

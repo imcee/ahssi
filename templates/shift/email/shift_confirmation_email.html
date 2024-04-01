@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+          <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+      <div class="col-xl-6">
+        <div class="card rounded-3 text-black">
+        <div class="row g-0">
+          <div class="col-lg">
+            <div class="card-body p-md-5 mx-md-4">
+      
+              <center>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width:700px;">
+                  <!-- BEGIN EMAIL -->
+                  <tbody>
+                    <tr>
+                      <td align="left" style="padding:30px">
+                        <div style="background-color:#fff; padding:30px;">
+                        {% if confirm == 'Request' %}
+                          <h1>Shift Cancellation Request:</h1>
+                          <p>
+                              <b>Shift Status:</b> {{shift_status}}<br>
+                              <b>Facility Name:</b> {{ facility_name }} <br>
+                              <b>Facility Address:</b> {{ facility_address }} <br>
+                              <b>Designation:</b> {{ staff_type }}<br>
+                              <b>Shift Date:</b> {{ shift_date }}<br>
+                              <b>Shift Schedule:</b> {{ shift_schedule }}<br>
+                              <br><b>Reason:</b> {{ reason }} <br><br>
+                          </p>
+                          <p>
+                            <b>View request:</b> <a href="{{ protocol }}://{{ domain }}{% url 'view_shifts' id=shift_id %}">Shift ID {{ shift_id }}</a>             
+                          </p>
+                        {% else %}
+                          <h1>Shift Details:</h1>
+                          <p>
+                              <b>Shift Status:</b> {{shift_status}}<br>
+                              <b>Facility Name:</b> {{ facility_name }} <br>
+                              <b>Facility Address:</b> {{ facility_address }} <br>
+                              <b>Designation:</b> {{ staff_type }}<br>
+                              <b>Shift Date:</b> {{ shift_date }}<br>
+                              <b>Shift Schedule:</b> {{ shift_schedule }} <br>
+
+                              
+                              {% if shift_status == 'Cancelled' %}
+                                <br><b>Reason:</b> {{ reason }} <br><br>
+                                <b>Please click button below to acknowledge the cancellation of this shift.</b><br>
+                                <p style="text-align:center; display:flex; align-items:center; justify-content: center;">
+                                  <a target="_blank" style="width: 60%; text-decoration:none; background-color: #92c83e; border: #92c83e 1px solid; color: #3f3f3f; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'cancelled' username=username firstname=firstname lastname=lastname shift_id=shift_id facility_cd=facility_cd staff_type=staff_type shift_date=shift_date shift_schedule=shift_schedule %}">
+                                  <strong>Acknowledge Shift Cancellation</strong></a>
+                              </p>
+                              {% endif %}
+                          </p>
+                          <p>
+                            To see more details, please login to your account in <a href="{{ protocol }}://{{ domain }}{{ index_url }}">{{ site_name }}</a>.             
+                          </p>
+                        {% endif %}
+                        </div>
+                   
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </center>
+      
+            </div>
+          </div>
+          
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    </section>
+  </body>
+   
+</html>

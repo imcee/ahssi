@@ -1,0 +1,59 @@
+<!-- shift/shift_confirmation.html -->
+{% extends "base.html" %}
+
+  {% block content %}
+
+  <head>
+      <meta http-equiv="refresh" content="10; URL={% url 'register' %}" />
+      <style>
+        .nav-links {
+            display:none;
+        }
+    </style>
+    </head>
+  
+    <body style="background-color: #c2e5d3; font-size: 16px;">
+      <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+          <div class="container py-5 mt-5">
+            <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+        <div class="col-xl-6">
+          <div class="card rounded-3 text-black">
+          <div class="row g-0">
+            <div class="col-lg">
+              <div class="card-body p-md-5 mx-md-4">
+                <div class="text-center py-2">
+                  {% if shift_status == 'True' %}
+                      <h2>Shift {{shift_id}} <b>Acknowledged!</b></h2>
+                  {% elif shift_status == 'False' %}
+                      <h2>Shift {{shift_id}} <b>Cancelled!</b></h2>
+                  {% else %}   
+                      <h2>Shift {{shift_id}} <b>Cancellation Request sent!</b></h2>
+                  {% endif %}
+                </div>
+                {% if shift_status  == 'True' %}
+                    <p style="text-align:center">Thank you for your acknowledgement!<br> Please take note of the shift schedule so you won't miss your shift.<br><br></p>
+                {% elif shift_status == 'False' %}
+                    <p style="text-align:center">Please standby for other staffing needs in the future by checking your email frequently, or by logging into your account in <a href="{{ protocol }}://{{ domain }}{{ index_url }}">{{ site_name }}</a>.<br><br></p>
+                {% else %} 
+                    <p style="text-align:center">The AHSSI Portal Admin will review your request and will contact you if necessary.<br>
+                      Please check your email frequently for updates or login in to you account in <a href="{{ protocol }}://{{ domain }}{{ index_url }}">{{ site_name }}</a>.<br><br></p>
+                {% endif %}
+                <p style="text-align:center">
+                <div class="button">  
+                  <a href="{% url 'login' %}" class="btn" style="width: 200px; text-decoration:none; background-color: #92c83e; border: black 1px solid; color: #fff; padding:10px 10px; display:block;">OK</a>
+                </div>
+                </p> 
+              </div>
+            </div>
+            
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </section>
+    </body>
+
+
+
+  {% endblock %}

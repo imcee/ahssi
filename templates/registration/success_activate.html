@@ -1,0 +1,48 @@
+<!-- registration/success_activate.html -->
+
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <meta http-equiv="refresh" content="5; URL={% url 'login' %}" />
+    <style>
+      .nav-links {
+          display:none;
+      }
+  </style>
+  </head>
+  <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+          <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+        <div class="col-xl-6">
+          <div class="card rounded-3 text-black">
+          <div class="row g-0">
+            <div class="col-lg">
+              <div class="card-body p-md-5 mx-md-4">
+        
+                <div class="text-center py-2">
+                  <h2>Account Verified</h2>
+                
+                </div>
+        
+                <p style="text-align:center">Your account has been verified!<br><br> Check your email for your login details.</p><br>
+                <p style="text-align:center">If you are not redirected in 5 seconds, 
+                <div class="button">  
+                  <a href="{% url 'login' %}" class="btn" style="width: 200px; text-decoration:none; background-color: #92c83e; border: black 1px solid; color: #fff; padding:10px 10px; display:block;">click here</a></p>          
+                </div>
+        
+              </div>
+            </div>
+            
+          </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      </section>
+</body>
+
+{% endblock %}

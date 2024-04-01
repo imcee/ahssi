@@ -1,0 +1,606 @@
+{% extends 'base.html' %}
+
+{% block title %} IC Invoice {% endblock %}
+
+{% block adminContent %}
+{% load static%}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+
+<style>
+
+#id_username, #id_payment_date, #id_start_date, #id_end_date,
+#id_report_type, #id_payment_start_date, #id_payment_end_date {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.45rem;
+    font-size: 1rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+.select2-container{
+    width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single {
+    border: none !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#delete_btn:hover, #publish_btn:hover, #delete_img:hover{
+    transform: scale(1.2);
+}
+
+.btn-time{
+    font-size: 0.85rem;
+}
+
+.modal-body-center{
+    text-align: center;
+}
+
+.icon {
+  padding-left: 25px;
+  background: url("{% static 'img/calendar.png' %}") no-repeat left;
+  background-size: 20px;
+  width: 235px;
+  border: 1px solid #939393;
+}
+
+</style>
+
+<div class="container">
+    <div>
+        <div >
+            <form id="dateform" action="" enctype="multipart/form-data" method="POST">
+                <div class="search-form">
+                {% csrf_token %}
+               <!-- {{ form }}-->
+                
+                {% for field in form %}
+                <p> 
+                {{field}}
+                </p> 
+                 {% endfor %}
+                 <input type="button" id="clearDates2" style="margin-left: 3px;
+                    background-image: url({% static 'img/reset.png' %});
+                    background-size: 22px 22px;
+                    background-repeat: no-repeat;
+                    height: 22px;
+                    width: 22px;
+                    border: none;"/>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    {% comment %}
+    <div class="form-group">
+        <div class="card">
+            <form method="get">
+                <p><b>Staff Name:</b>{{ ic_filter.form.staff_name }}</p>
+                <p><b>Payment Date:</b>{{ ic_filter.form.payment_date }}</p>
+                <button class="btn" type="submit">Search</button>
+                {% if has_filter %}
+                    <a href="{%  url 'ic_invoice' %}">Clear all filters</a>
+                {% endif %}
+            </form>
+        </div>
+    </div> 
+    {% endcomment %}
+
+    <div class="modal fade" id="generateModalToggle" aria-hidden="true" aria-labelledby="generateModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 72%; margin: auto;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalToggleLabel">Generate Invoice</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{% url 'ic_invoice' %}">
+
+                    {% csrf_token %}
+                    {{invForm.as_p}}
+                    <span style="font-size:10px; font-style: italic; display: block; text-align: center; position:relative; top:-4px;">Unset staff name will generate invoice for each staff <br>with valid time entry for the given period</span>
+
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'ic_invoice' %}"><input class="btn btn-secondary btn-time" type="button" name="Done" value="Done" style="position:relative;"></a>
+                <input class="btn btn-outline-success btn-time" type="submit" value="Generate" name="generate"/>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="ICSummaryModalToggle" aria-hidden="true" aria-labelledby="ICSummaryModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 72%; margin: auto;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalToggleLabel">Generate IC Summary Report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{% url 'ic_invoice' %}">
+
+                    {% csrf_token %}
+                    {{icForm.as_p}}
+                    
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'ic_invoice' %}"><input class="btn btn-secondary btn-time" type="button" name="Done" value="Done" style="position:relative;"></a>
+                <input class="btn btn-outline-success btn-time" type="submit" value="Generate" name="ic_summary"/>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="PayrollSummaryModalToggle" aria-hidden="true" aria-labelledby="PayrollSummaryModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="width: 72%; margin: auto;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalToggleLabel">Generate Payroll Total Report</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" action="{% url 'ic_invoice' %}">
+
+                    {% csrf_token %}
+                    {{payrollForm.as_p}}
+                    
+            </div>
+            <div class="modal-footer">
+                <a href="{% url 'ic_invoice' %}"><input class="btn btn-secondary btn-time" type="button" name="Done" value="Done" style="position:relative;"></a>
+                <input class="btn btn-outline-success btn-time" type="submit" value="Generate" name="payroll_summary"/>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+    </div>
+    
+    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+ 
+            <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#unpublished" role="tab" aria-controls="home" aria-selected="true" style="color:blue">Unpublished</a>
+            </li>
+        
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#published" role="tab" aria-controls="profile" aria-selected="false" style="color:green">Published</a>
+            </li>
+
+	</ul>
+
+    <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="unpublished" role="tabpanel" aria-labelledby="home-tab">
+            <div class="card">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">IC Invoice</h5>
+                    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+                    {% comment %}<a data-bs-toggle="modal" data-bs-target="#generateModalToggle"><input class="btn btn-success" type="button" name="Generate" value="Generate Invoice"></a>{% endcomment %}
+                        <div class="dropdown">
+                            <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Generate
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#generateModalToggle">IC Invoice</a></li>
+                            <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#ICSummaryModalToggle">IC Summary</a></li>
+                            <!--<li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#ICReimbursementModalToggle">IC Reimbursement</a></li>-->
+                            <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#PayrollSummaryModalToggle">Payroll Total Summary</a></li>
+                            
+                            </ul>
+                        </div>
+
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <table id="jquery-datatable-example-default-ordering-sorting-1" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Invoice No</th>
+                            <th scope="col">Payment Date</th>
+                            <th scope="col">Period Start Date</th>
+                            <th scope="col">Period End Date</th>
+                            <th scope="col">Staff Name</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">View</th>
+                            <th scope="col" data-orderable="false" style="text-align: center;"><input type="checkbox" class="checkAll" name="checkAll"></th>
+                        </tr>
+                        </thead>        
+                        {% if paystubs|length > 0 %}   
+                        <tbody class="paystub">
+                            {% csrf_token %}
+                            {% for pay in paystubs %}
+                                {% if not pay.visible %}
+                                <tr id="{{ pay.id }}">
+                                    <th scope="row">{{ pay.invoice_no }}</th>
+                                    <td>{{ pay.payment_date }}</td>
+                                    <td>{{ pay.period_start_date }} </td>
+                                    <td>{{ pay.period_end_date }}</td>
+                                    <td>{{ pay.staff_name|title }}</td>
+                                    <td>{{ pay.total_amt }}</td>
+                                    <td>
+                                    {% if pay.upload %}
+                                        <a target="_blank" type="button" href="{{ pay.upload.url }}" style="-webkit-appearance: none; -moz-appearance: none; appearance: none;">Invoice</a>
+                                    {% else %}
+                                        Invoice
+                                    {% endif %}
+                                    </td>
+
+                                    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+                                    <td style="text-align: center;">
+										<input class="checkboxes" name="invoice_id[]" type="checkbox" value="{{pay.id}}">
+                                    </td>
+                                    {% endif %}
+
+                                    <!-- Modal Delete Invoice -->
+                                    <div class="modal fade" id="deleteModalToggle{{pay.id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content" style="width: 85%; margin: auto;">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalToggleLabel">Invoice #: {{pay.invoice_no}}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body modal-body-center">
+                                                <form method="GET" action="{% url 'delete_ic_invoice' id=pay.id %}">
+
+                                                    {% csrf_token %}
+                                                    Are you sure you want to delete invoice for <br>{{pay.staff_name}}?
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input class="btn btn-outline-success btn-time" type="submit" value="Yes" />
+                                                <a href="{% url 'ic_invoice' %}"><input class="btn btn-secondary btn-time" type="button" name="Cancel" value="Cancel"></a>
+
+                                            </div>
+                                            </form>
+                                            
+                                        </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endif %}
+    
+                            {% endfor %}
+                        </tbody>
+                        {% else %}
+                            <tr>
+                                <td colspan="8" class="dataTables_empty">No Invoice Available</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--end tab -->
+
+        <div class="tab-pane fade" id="published" role="tabpanel" aria-labelledby="accepted-tab">
+            <div class="card">
+
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">IC Invoice</h5>
+                    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+                    <div class="dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Generate
+                        </button>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#generateModalToggle">IC Invoice</a></li>
+                        <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="ICSummaryModalToggle">IC Summary</a></li>
+                        <!--<li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#ICReimbursementModalToggle">IC Reimbursement</a></li>-->
+                        <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#">Payroll Total Summary</a></li>
+                        
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <table id="jquery-datatable-example-default-ordering-sorting-1" class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">Invoice No</th>
+                            <th scope="col">Payment Date</th>
+                            <th scope="col">Period Start Date</th>
+                            <th scope="col">Period End Date</th>
+                            <th scope="col">Staff Name</th>
+                            <th scope="col">Total Amount</th>
+                            <th scope="col">View</th>
+                            <th scope="col">Published</th>
+                            <th scope="col" data-orderable="false">&nbsp;</th>
+                            
+                        </tr>
+                        </thead>        
+                        {% if paystubs|length > 0 %}   
+                        <tbody class="paystub">
+                            {% for pay in paystubs %}
+                                {% if pay.visible %}
+                                <tr id="{{ time.id }}">   
+                                    <th scope="row">{{ pay.invoice_no }}</th>
+                                    <td>{{ pay.payment_date }}</td>
+                                    <td>{{ pay.period_start_date }} </td>
+                                    <td>{{ pay.period_end_date }}</td>
+                                    <td>{{ pay.staff_name|title }}</td>
+                                    <td>{{ pay.total_amt }}</td>
+    
+                                    <td><a target="_blank" type="button" href="{{ pay.upload.url }}" style="-webkit-appearance: none; -moz-appearance: none; appearance: none;">Invoice</a></td>
+                                    <td>{{ pay.visible }}</td>
+
+                                    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+                                    <td class="menu-dropdown">
+                                        <a data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{pay.id}}"><img src="{% static 'img/trash.png' %}" alt="Delete" title="Delete" class="logo"></a>&nbsp;&nbsp;
+                                        {% comment %}<a href="{% url 'update_paystub' id=pay.id %}"><img width="16" src="{% static 'img/view_grey.png' %}" alt="View" title="View" class="logo"></a>&nbsp;&nbsp;
+                                        <a href="{% url 'publish_ic_invoice' id=pay.id %}"><img width="15" src="{% static 'img/publish.png' %}" alt="Publish" title="Publish" class="logo"></a>{% endcomment %}
+                                    </td>
+
+                                    {% endif %}
+
+                                    <!-- Modal Delete Invoice -->
+                                    <div class="modal fade" id="deleteModalToggle{{pay.id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content" style="width: 85%; margin: auto;">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalToggleLabel">Invoice #: {{pay.invoice_no}}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body modal-body-center" style="text-align: center;">
+                                                <form method="GET" action="{% url 'delete_ic_invoice' id=pay.id %}">
+
+                                                    {% csrf_token %}
+                                                    Are you sure you want to delete invoice for <br>{{pay.staff_name}}?
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input class="btn btn-outline-success btn-time" type="submit" value="Yes" />
+                                                <a href="{% url 'ic_invoice' %}"><input class="btn btn-secondary btn-time" type="button" name="Cancel" value="Cancel"></a>
+                                                
+                                            </div>
+                                            </form>
+                                            
+                                        </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                {% endif %}
+    
+                            {% endfor %}
+                        </tbody>
+                        {% else %}
+                            <tr>
+                                <td colspan="9" class="dataTables_empty">No Invoice Available</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>   
+                
+                
+            </div>
+        </div>
+        <!--end tab -->
+
+
+  </div>
+  {% else %}
+   <!-- FOR STAFF -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    
+    </ul>
+  <div class="tab-content" id="myTabContent">
+
+    <div class="tab-pane fade show active" id="published" role="tabpanel" aria-labelledby="accepted-tab">
+        <div class="card">
+
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">My Invoice</h5>
+
+            </div>
+            
+            <div class="card-body">
+                <table id="jquery-datatable-example-default-ordering-sorting-1" class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Invoice No</th>
+                        <th scope="col">Payment Date</th>
+                        <th scope="col">Period Start Date</th>
+                        <th scope="col">Period End Date</th>
+                        <th scope="col">Staff Name</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">View</th>
+                        <th scope="col" data-orderable="false">&nbsp;</th>
+                    </tr>
+                    </thead>        
+                    {% if paystubs|length > 0 %}   
+                    <tbody class="paystub">
+                        {% for pay in paystubs %}
+                            {% if pay.visible %}
+                            <tr>   
+                                <th scope="row">{{ pay.invoice_no }}</th>
+                                <td>{{ pay.payment_date }}</td>
+                                <td>{{ pay.period_start_date }} </td>
+                                <td>{{ pay.period_end_date }}</td>
+                                <td>{{ pay.staff_name|title }}</td>
+                                <td>{{ pay.total_amt }}</td>
+                                <td><a target="_blank" type="button" href="{{ pay.upload.url }}" style="-webkit-appearance: none; -moz-appearance: none; appearance: none;">Invoice</a></td>
+
+                            </tr>
+                            {% endif %}
+
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                        <tr>
+                            {% if user.staff_type_id == 'AHSSI STAFF' %}
+                                <td colspan="8" class="dataTables_empty">Access limited to own invoice, <br>contact Payroll Admin.</td>
+                            {% else %}
+                                <td colspan="8" class="dataTables_empty">No invoice available at this period, <br>use date filter to see past invoices.</td>
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>   
+            
+            
+        </div>
+    </div>
+    <!--end tab -->
+</div>
+
+  {% endif %}
+  <div class="flex justify-content-center align-self-center" style="margin-top:10px; margin-bottom:15px; display: flex;width: 100%;justify-content: space-evenly; align-items: center;">
+    <a href="#" style="font-size: 14px; color:#495057;">Export IC Invoice</a>
+
+    {% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+    <div style="margin-left:81%;">
+        <button type="submit" id="publish_btn" class="btn_publish" style="background-color:transparent; border-color:transparent;"><img width="21" src="{% static 'img/upload-solid.png' %}" alt="Publish" title="Publish" class="logo" ></button>
+
+        <button type="submit" id="delete_btn" class="btn_delete" style="background-color:transparent; border-color:transparent;"><img width="18" src="{% static 'img/delete.png' %}" alt="Delete" title="Delete" class="logo"></button>
+
+    </div>
+    {% endif %}
+  </div>
+  
+</div>
+
+<script>
+    $(document).ready(function()
+    {
+      
+        $('#id_username').select2({ width: '100%' });
+        $('#id_facility').select2({ width: '100%' });
+        $("#id_username").select2({dropdownParent: $("#generateModalToggle")});
+
+        $(".checkAll").click(function() {
+			if (this.checked) {
+         		$(".checkboxes").prop("checked", true);
+			} else {
+				$(".checkboxes").prop("checked", false);
+			}	
+		});
+
+		$(".checkboxes").click(function(){
+			var numberOfCheckboxes = $(".checkboxes").length;
+			var numberOfCheckboxesChecked = $('.checkboxes:checked').length;
+
+			if(numberOfCheckboxes == numberOfCheckboxesChecked) {
+				$(".checkAll").prop("checked", true);
+			} else {
+				$(".checkAll").prop("checked", false);
+			}
+		});
+
+
+        $('#delete_btn').click(function(){
+			var id = [];
+			var csrf=$('input[name=csrfmiddlewaretoken]').val();
+
+			$('input.checkboxes[type=checkbox]:checked').each(function(i){
+				id[i]=$(this).val()
+			})
+
+			if(id.length===0){
+				alert("Please select IC Invoice to delete.")
+			}
+			else{
+				if(confirm("Are you sure you want to delete these IC Invoices?")){
+					console.log(id)
+					$.ajax({
+						url: "{% url 'ic_invoice' %}",
+						method: "POST",
+						data:{
+							id,
+							csrfmiddlewaretoken:csrf
+						},
+						success:function(response){
+							for(var i=0; i < id.length; i++){
+								$('tr#'+id[i]+'').css('background-color', '#ccc');
+								$('tr#'+id[i]+'').fadeOut('slow');
+							}
+						}
+					})
+				}
+
+                $(".checkAll").prop("checked", false);
+                $(".checkboxes").prop("checked", false);
+				
+			}
+		})
+
+        // PUBLISH
+
+        $('#publish_btn').click(function(){
+			var id = [];
+			var csrf=$('input[name=csrfmiddlewaretoken]').val();
+
+			$('input.checkboxes[type=checkbox]:checked').each(function(i){
+				id[i]=$(this).val()
+			})
+
+			if(id.length===0){
+				alert("Please select IC Invoice to publish.")
+			}
+			else{
+				if(confirm("Press OK to continue publishing IC Invoices.")){
+					
+					$.ajax({
+						url: "{% url 'publish_ic_invoice' %}",
+						method: "POST",
+						data:{
+							id,
+							csrfmiddlewaretoken:csrf
+						},
+                        success:function(response){
+							//alert("IC Invoices published.")
+                            window.location.href=window.location.href;
+						}
+					
+					})
+				}
+    
+                $(".checkAll").prop("checked", false);
+                $(".checkboxes").prop("checked", false);
+				
+			}
+		})
+
+
+    });
+
+
+    
+
+</script>
+{% endblock %}

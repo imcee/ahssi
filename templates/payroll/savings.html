@@ -1,0 +1,607 @@
+{% extends 'base.html' %}
+
+{% block title %} Savings Election {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+}
+
+#id_savings_deduction, #id_username {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.45rem;
+    font-size: 1rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+#id_status {
+    width: 7%;
+    height: 15px;
+}
+
+.setting-container-rate {
+    /*display: grid;*/
+    padding: 30px;
+    grid-template-columns: 1000px;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+.bghover:hover {
+    background-color: #edf0f2;
+}
+
+.tab-content{
+
+	padding-left:10px;
+}
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 100%;
+}
+
+.modal-show .modal-dialog{
+
+	transform: unset;
+}
+
+.modal .fade .modal-dialog{
+	transition: unset;
+	transform: unset;
+}
+
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 45rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 30px !important;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+
+	text-align: left;
+	width: 100%;
+	margin:auto;
+	height: 40rem;
+	
+
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 20rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgba(43, 42, 42, 0.14) 0px 4px 20px 0px, rgba(13, 13, 14, 0.4) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(94, 95, 94), rgb(113, 115, 113));
+
+	
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+    .nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+    }
+
+    .card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    padding: 5px 1px;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+}
+
+table > thead > tr {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
+    background-color: transparent;
+	font-size: 0.85rem;
+}
+
+.table>:not(:first-child){
+
+	border-top: 1px solid currentColor;
+}
+
+#id_rate{
+
+	width: 4.8rem;
+	height:1.4rem;
+}
+
+.th-rate{
+	padding: 10px;
+	border-bottom: 1px solid rgba(211,211,211,1);
+	font-size: 15px;
+	text-align: right;
+	width: 20%;
+}
+
+.td-rate{
+	text-align: center;
+	padding: 13px;
+	font-size: 15px;
+	width: 15%;
+}
+
+.td-hide{
+	color: rgb(255, 255, 255);
+	color: rgba(255, 255, 255, 0.5);
+}
+
+
+.td-unit{
+
+	color:darkgrey;
+	width:10%;
+}
+
+.td-form{
+	text-align: left;
+	padding: 13.1px;
+	font-size: 14px;
+	width: 20%;
+	
+}
+
+
+table > th {
+	text-align: center;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+
+
+.row-div{
+  margin-left:-5px;
+  margin-right:-5px;
+
+}
+
+.column {
+  float: left;
+  width: 95%;
+  padding: 0;
+  margin-left: 20px;
+
+}
+.column-form{
+  float: left;
+  width: 15%;
+}
+
+.btn-time{
+    font-size: 0.85rem;
+}
+
+#add_img:hover{
+    transform: scale(1.2);
+}
+
+.select2-container{
+    width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single {
+        border: none !important;
+    }
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+</style>
+<div class="top-space">
+
+</div>
+
+{% url 'savings' as savings %}
+{% url 'add_savings' as add_savings %}
+{% url 'timesheet_all' as timesheet_all %}
+
+<div class="setting-container-rate">
+    <div class="setting-menu">
+
+
+		<!-- Modal Add Savings -->
+        <div class="modal fade" id="addModalToggle" aria-hidden="true" aria-labelledby="addModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="width: 30%; margin:auto;">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Add Savings Election</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ savings }}">
+
+                        {% csrf_token %}
+                        
+                        {{ addform.as_p }}
+                         
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success" type="submit" value="Save" name="add_savings" />
+                   
+                </div>
+                </form>
+                
+            </div>
+            </div>
+        </div>
+
+	  	<div class="card-rd">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation">
+					<span class="nav-tabs-title">Savings Election</span>
+		
+				</div>
+				{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %}
+				   <a data-bs-toggle="modal" data-bs-target="#addModalToggle"><img id="add_img" width="15" src="{% static 'img/plus-white.png' %}" alt="New" title="New Savings Election" class="logo"></a>
+				{% endif %}
+			</div>
+
+
+		   <div class="card-body" style="overflow: auto;">
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="active-tab">
+						
+						<table id="jquery-datatable-example-default-ordering-sorting-1" style="width: 100%; overflow-x: auto;">
+							<thead>
+								<tr>
+									<th scope="col">Username</th>
+									<th scope="col">Staff Name</th>
+									<th scope="col">Savings Deduction</th>
+									<th scope="col">Deduction Date</th>
+									<th scope="col">Savings Amount</th>
+									<th scope="col">Savings Status</th>
+									<th scope="col" data-orderable="false">&nbsp;</th>
+								</tr>
+							</thead>
+
+						{% if all_savings.count > 0 or all_savings|length > 0 %} 
+					
+							<tbody>
+								{% for savings in all_savings %}
+								
+								<tr class="bghover">
+									<td>{{savings.username}}</td>
+									<td>{{savings.first_name}} {{savings.last_name}}</td>
+									<td>{{savings.savings_deduction}}</td>
+									<td>{{savings.staff_savings_history__deduction_date}}</td>
+									<td>{{savings.staff_savings_history__savings_amt}}</td>
+									<td>{% if savings.status %}Active {% else %}Inactive {% endif %}</td>
+									<td style="text-align:center;">
+										{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %} 
+														
+                                            <a href="{% url 'edit_savings' username=savings.username %}"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>
+                                            <a data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{savings.username}}"><img width="16" src="{% static 'img/delete.png' %}" alt="Delete" title="Delete" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>
+    
+										{% endif %}
+									</td>
+									
+									<!-- Modal Delete Timesheet -->
+									<div class="modal fade" id="deleteModalToggle{{savings.username}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+										<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content" style="width: 50%; margin: auto;">
+											<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalToggleLabel">Delete Savings Election</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body" style="font-size: 16px; text-align: center;">
+												<form method="GET" action="{% url 'delete_savings' username=savings.username%}">
+
+													{% csrf_token %}
+
+													This will delete the entire savings history for <b>{{ savings.first_name }} {{ savings.last_name }}</b>.
+													<br>Are you sure you want to proceed?
+
+											</div>
+											<div class="modal-footer">
+												<input class="btn btn-outline-success btn-time" type="submit" value="Yes" />
+                                            	<a data-bs-toggle="modal" data-bs-target="#viewModalToggle{{savings.id}}"><input class="btn btn-secondary btn-time" type="button" name="Cancel" value="Cancel"></a>
+											
+											</div>
+											</form>
+											
+										</div>
+										</div>
+									</div>
+
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% else %}
+								<tr>
+									{% if user.staff_type_id == 'AHSSI STAFF' %}
+										<td>Access limited to own savings history, <br>contact Payroll Admin.</td>
+									{% else %}
+										<td>No Savings Elections to show.</td>
+									{% endif %}
+								</tr>
+
+						{% endif %}
+						</table>
+
+						{% comment %}
+						{% if request.path == savings %}
+							<a href="{% url 'timesheet_all' %}"> View All</a>
+						{% endif %}
+						{% endcomment %}
+
+					</div>
+				</div>
+			
+			</div>
+	   	</div>
+
+	</div>
+	<div class="flex justify-content-center align-self-center" >
+        <a href="{% url 'export_data' data='savings'%}" style="font-size: 13px; color:#495057; margin-left: 45%;">Export Savings Election</a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function()
+    {
+      
+            $('#id_username').select2({ width: '100%' });
+            $('#id_facility').select2({ width: '100%' });
+            $("#id_username").select2({dropdownParent: $("#addModalToggle")});
+    
+    });
+
+
+</script>
+        
+{% endblock %}

@@ -1,0 +1,21 @@
+<!-- admin/remove_user.html -->
+{% extends "base.html" %}
+
+{% block adminContent %}
+<style>
+    main {
+        width: 50%;
+    }
+
+</style>
+<div class="main">
+    <!-- Create a Form -->
+    <form method="POST">
+        <!-- Security token by Django -->
+        {% csrf_token %}
+        Are you want to delete this item? <br>
+        <input class="btn btn-success" type="submit" value="Yes" />
+        <a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+    </form>
+</div>
+{% endblock %}

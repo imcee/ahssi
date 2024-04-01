@@ -1,0 +1,164 @@
+<!-- templates/shift/email_shift_form.html -->
+{% extends 'base.html' %}
+{% block title %} Bid Form {% endblock %}
+{% if user.is_authenticated %}
+    {% block adminContent %}
+    {% load static %}
+    <style>
+        .nav-links {
+            display:none;
+        }
+        #id_add_message {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+        }
+
+        
+        
+    
+    </style>
+
+    {% if messages %}
+    <ul class="messages">
+        <!-- {% for message in messages %} -->
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        <!-- {% endfor %} -->
+    </ul>
+    {% endif %}
+    <div class="bid-container">
+        <div class="row m-0 p-0 w-100"> 
+            <div class="card col-lg bidshiftform">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Bid Shift Form</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Create a Form -->
+                    {% comment %}<p><b>{{ facility_name }}</b></p> {% endcomment %}
+                    <p><b>Shift Date: </b>{{ shift_date }}</p>
+                    <hr>
+                    <form method="POST" id="adhoc_form">
+                        <!-- Security token by Django -->
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <p> 
+                        
+                            {{field.label_tag}}
+                            {{field|safe}}
+
+                                {% if field.help_text %}
+                                    <small style="color:grey;">{{field.help_text}}</small>
+                                {% endif %}
+                
+                                {% for error in field.errors %}
+                                    <small style="color:red;" id="id_error">{{error}}</small>
+                                {% endfor %}
+                            </p>
+
+                        {% endfor %}
+                        <!-- form as paragraph -->
+                        
+                        <div class="formBtn">
+                        <button title="submit" id="id_submit" class="btn btn-success" type="submit" style="float: right;">Submit</button>
+                        </div>
+                    </form>
+            
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    
+{% endblock %}
+{% else %}
+    {% block content %}
+    {% load static %}
+    <style>
+        .nav-links {
+            display:none;
+        }
+        #id_add_message {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+        }
+
+       
+    </style>
+    <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+            {% if messages %}
+            <ul class="messages">
+                <!-- {% for message in messages %} -->
+                    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <!-- {% endfor %} -->
+            </ul>
+            {% endif %}
+            <div class="row">
+                <div class="card col-lg bidshiftform">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Bid Shift Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Create a Form -->
+                        {% comment %}<p><b>{{ facility_name }}</b></p> {% endcomment %}
+                        <p><b>Shift Date: </b>{{ shift_date }}</p>
+                        <hr>
+                        <form method="POST">
+                            <!-- Security token by Django -->
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <p> 
+                        
+                            {{field.label_tag}}
+                            {{field|safe}}
+
+                                {% if field.help_text %}
+                                    <small style="color:grey;">{{field.help_text}}</small>
+                                {% endif %}
+                
+                                {% for error in field.errors %}
+                                    <small style="color:red;" id="id_error">{{error}}</small>
+                                {% endfor %}
+                            </p>
+
+                        {% endfor %}
+
+                            
+                            <div class="formBtn">
+                                <button title="submit" id="id_submit" class="btn btn-success" type="submit" style="float: right;">Submit</button>
+                            </div>
+                        </form>
+                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </body>
+
+    <script>
+        
+    
+    </script>
+
+    {% endblock %}
+{% endif %}
+

@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+
+{% block title %} Memo {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+	.messages{
+		position: fixed;
+	}
+	
+	.setting-container {
+		display: grid;
+		padding: 30px;
+		grid-template-columns: 1fr .4fr;
+	}
+	
+	.card-endorse{
+		/* text-align: left; */
+		position: relative;
+		/* left:150px;
+		width: 39rem; */
+		margin-top: 60px;
+		max-height: 35rem;
+		display: flex;
+		justify-content: center;
+	
+	}
+
+	.card-body-links{
+		overflow-y: scroll;
+		margin-top:-20px;
+		/*height: 85%;*/
+		height: 24rem;
+	}
+	
+	.card-endorse-details{
+		position: relative;
+		margin-top: 33px;
+		max-height: 35rem;
+		padding-left: 10px;
+		/* margin-left: 80px; */
+	}
+
+	.btn-memo{
+		position: absolute;
+		bottom: 10px;
+		font-size: 12px;
+		text-decoration: none;
+		text-align: center;
+	}
+
+	.card-category{
+		text-align: center;
+		margin-top:20px;
+	}
+
+	.card-links {
+		margin-top: 30px;
+		height: 600px;
+		
+	}
+
+	#cke_id_message{
+    width: 100% !important;
+	}
+	.cke1{
+		width: 100%;
+	}
+
+
+	.card-avatar{
+		text-align: center;
+	}
+
+	.card-description{
+		margin-top:20px;
+	}
+
+	.card-links .card-avatar img {
+		width: 100%;
+		height: auto;
+	}
+
+	.card-links .card-avatar {
+		max-width: 130px;
+		max-height: 130px;
+		margin: -50px auto 0;
+		border-radius: 50%;
+		overflow: hidden;
+		padding: 0;
+		/*box-shadow: 0 16px 38px -12px rgb(0 0 0 / 56%), 0 4px 25px 0 rgb(0 0 0 / 12%), 0 8px 10px -5px rgb(0 0 0 / 20%);*/
+	}
+
+
+	
+	
+	.list-group li{
+		word-wrap: break-word;
+	}
+	
+	.list-group-item{
+		height: 3.5rem;
+	}
+	
+	.text {
+	  display: block;
+	  /* width: 500px; */
+	  overflow: hidden;
+	  white-space: nowrap;
+	  text-overflow: ellipsis;
+	  /* margin-left: 25px; */
+	}
+	
+	.logo-comment {
+	
+		opacity: 0.7;
+	}
+	
+	.bghover:hover {
+    background-color: #edf0f2;
+}
+	/*Changes*/
+	
+	.card-rd {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		min-width: 0px;
+		max-height: 35rem;
+		border: 0px;
+		margin-bottom: 30px;
+		margin-top: 30px;
+		border-radius: 6px;
+		color: rgb(51, 51, 51);
+		background: rgb(255, 255, 255);
+		width: 97%;
+		box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+		/* box-shadow: rgb(0 0 0 / 14%) 0px 1px 4px 0px; */
+	}
+
+	.card-rd-links{
+		width: 95%;
+	}
+
+	.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+		border-radius: 3px;
+		margin-top: -20px;
+		padding: 15px;
+	}
+
+	.card-rd [class*="card-header-"] {
+		margin: 0px 15px;
+		padding: 0px;
+		position: relative;
+	}
+
+	.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+		box-shadow: rgb(0 0 0 / 14%) 0px 4px 20px 0px, rgb(156 39 176 / 40%) 0px 7px 10px -5px;
+	}
+
+	.card-rd .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary-details .card-text {
+        box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+    }
+
+    .card-rd .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+        background: linear-gradient(60deg, #26c6da, #00acc1);
+	}
+	.card-rd [class*="card-header-"], .card-rd[class*="bg-"] {
+		color: rgb(255, 255, 255);
+	}
+
+	.card-rd .card-header {
+		border-top: inherit !important;
+	}
+
+	.card-rd .card-header.card-header-tabs .nav-tabs-title {
+		float: left;
+		padding: 10px 10px 10px 0px;
+		line-height: 24px;
+	}
+
+	.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+		background: linear-gradient(60deg, rgb(171, 71, 188), rgb(142, 36, 170));
+	}
+
+	.card-rd .card-header.card-header-tabs .nav-tabs {
+		background: 0px 0px;
+		padding: 0px;
+	}
+
+	.card-rd2 {
+		width: 165%;
+	}
+	
+	
+	
+
+	.card-rd a li {
+		border-top: none;
+		border-right: none;
+		border-left: none;
+		border-spacing: 2px;
+	}
+
+	.nav-tabs {
+		border: 0px;
+		border-radius: 3px;
+	}
+
+	.nav {
+		display: flex;
+		flex-wrap: wrap;
+		padding-left: 0px;
+		margin-bottom: 0px;
+		list-style: none;
+	}
+
+	.nav-tabs .nav-item {
+		margin-bottom: -1px;
+	}
+
+	.nav-tabs .nav-item .nav-link.active {
+		background-color: rgba(255,255,255,.2);
+	}
+
+	.nav-tabs .nav-item .nav-link{
+		font-weight: 500;
+		border: 0px !important;
+		color: rgb(255, 255, 255) !important;
+		position: relative;
+		color: rgb(255, 255, 255);
+		border: 0px;
+		margin: 0px;
+		border-radius: 3px;
+		line-height: 24px;
+		text-transform: uppercase;
+		font-size: 12px;
+		padding: 10px 15px;
+		background-color: transparent;
+		transition: background-color 0.3s ease 0s;
+	}
+
+	.card-rd .card-body {
+		padding: 0.9375rem 20px;
+		position: relative;
+	}
+
+	.search-form {
+		margin-top: 30px;
+	}
+
+	.endorse--active{
+		background: #daf0ff;
+	}
+
+	.memo--active {
+		background: #daf0ff;
+		
+	}
+
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+			position: relative;
+			top: 45%;
+		}
+
+		.card-rd-links {
+			width: 100%;
+		}
+
+
+		.card-rd{
+
+			text-align: left;
+			width: 100%;
+			margin-top: 15px;
+			max-height: 35rem;
+			height: 500px;
+		}
+
+		.card-rd2 {
+			width: 135%;
+		}
+	
+
+		.card-links .card-avatar img {
+			width: 50%;
+			height: auto;
+			margin-top: 20%;
+}
+
+	}
+
+</style>
+<div class="top-space">
+
+</div>
+<div>
+	<div>
+		<form class="form-inline my-2 my-lg-0" action="{% url 'memo' id=0 search=search %}">
+			<div class="search-form">
+				<input class="form-control mr-sm-2 mr-5 search-text" type="search" placeholder="Search Value" aria-label="Search" name="search">
+				<button title="Click again to show all memos" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="setting-container">
+    <div class="setting-menu">
+
+	 {% if detail != None %}
+		<!-- Modal Edit -->
+
+		<div class="modal fade" id="editModalToggle{{detail.id}}" aria-hidden="true" aria-labelledby="editModalToggleLabel" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalToggleLabel">Edit Memo</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="{% url 'memo' id=detail.id search=search %}" enctype="multipart/form-data">
+		
+						{% csrf_token %}
+						{{ editform.media }}
+						{{ editform.as_p|safe }}
+				</div>
+					<div class="modal-footer">
+						<input class="btn btn-success" type="submit" value="Update" />
+						
+					</div>
+				  </form>
+				
+				</div>
+			</div>
+		</div>
+
+
+		<div class="modal fade" id="deleteModalToggle{{detail.id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalToggleLabel">Delete Memo</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="{% url 'delete_memo' id=detail.id search=search %}">
+						<!-- Security token by Django -->
+						{% csrf_token %}
+						Are you sure you want to delete this item? <br>
+				
+				</div>
+				<div class="modal-footer">
+					<input class="btn btn-success" type="submit" value="Yes" />
+					<a href="{% url 'memo' id=detail.id search=search %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+				</form>
+				</div>
+				
+			</div>
+			</div>
+		</div>
+
+	 {% endif %}
+
+	
+	  	<div class="card-rd card-rd2" style="text-align: left;  margin-top: 30px; max-height: 35rem;">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation">
+					<div class="nav-tabs-wrapper">
+					<span class="nav-tabs-title">Memo:</span>
+					<ul class="nav nav-tabs" data-tabs="tabs">
+					<li class="nav-item">
+					{% if detail is not None %} 
+						<a class="nav-link active" href="{% url 'memo' id=detail.id search=None %}" data-toggle="tab">
+						Current
+						<div class="ripple-container"></div>
+						</a>
+					{% else %}
+						<a class="nav-link active" href="{% url 'memo' id=0 search=None %}" data-toggle="tab">
+						Current
+						<div class="ripple-container"></div>
+						</a>
+					{% endif %}
+					</li>
+					</ul>
+					</div>
+				</div>
+
+				{% if user.is_superuser or user.is_staff %}
+					<a href="{% url 'post_memo' %}"><img width="15" src="{% static 'img/plus-white.png' %}" alt="Post Memo" title="Post Memo" class="logo"></a>
+				{% endif %}
+
+		   </div>
+
+		   <div class="card-body">
+
+				{% if detail is not None %} 
+			
+					<div class="memo-text" align="left" style="line-height: 1em; height: 480px; overflow: auto;">
+						<span style="color:black;">{{ detail.title }}<br>
+						<span style="color:gray; font-size: 12px;">Posted by: {{ detail.author }} on {{ detail.posted_dt|date:"M j, Y g:i A"}}<hr> <br></span>
+						<span style="color:black;">{{ detail.message|safe }}<br>
+
+						{% if file|length > 0 %} 
+							{% for f in file %}
+
+								<a target="_blank" type="button" href="{{ f.attachment.url }}" style="-webkit-appearance: none; -moz-appearance: none; appearance: none;">
+								{% if f.file_type == 'image' %}
+									<img style="width:180px;" src="{{ f.attachment.url }}" alt="{{f.attachment.name}}" title="{{f.attachment.name}}" class="logo img-fluid">
+								{% else %}
+									{{ f.file_name }}
+									
+								{% endif %} 
+								</a>
+							{% endfor %}
+						
+						{% endif %} 
+						
+
+					</div>
+					
+				{% endif %}
+			
+			</div>
+			<!-- <div class="comment" align="right" style="position:absolute; right:20px; bottom: 15px;"> -->
+				<div class="comment" align="right" style="margin-right:20px; margin-bottom: 20px;">
+
+					{% if user.is_superuser %} 
+
+						<a data-bs-toggle="modal" data-bs-target="#editModalToggle{{detail.id}}"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Memo" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>
+						<a data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{detail.id}}"><img width="13" src="{% static 'img/delete.png' %}" alt="Delete" title="Delete Memo" class="logo logo-comment"></a>
+					
+					{% endif %}
+				</div>
+	   	</div>
+
+	</div>
+	<div class="card-c">
+		<div class="card-rd card-rd-links card-links" style="left:40%; width:60%;">
+			<div class="card-avatar">
+				<img class="img" src="{% static 'img/memo.png' %}">
+			</div>
+
+				<hr>
+			<div class="card-body-links">
+				
+				<div class="card-description">
+					{% if all_memo|length > 0 %} 
+						{% for memo in all_memo %}
+							{% url 'memo' id=memo.id search=search as memos %}
+							{% url 'memo' id=0 search=search as memosinitial %}
+							<a class="bghover tool {% if request.get_full_path == memos %}memo--active{% endif %}{% if forloop.first and request.get_full_path == memosinitial %}
+							memo--active {% endif %}" href="{% url 'memo' id=memo.id search=search %}#memo-{{memo.id}}" style="text-decoration: None; margin-left: unset;">
+								<div class="text" style="text-align:left;" id="memo-{{memo.id}}">
+								
+									<span style="color:black;line-height: 0em;">{{ memo.title }} <br>
+									<span style="color:gray; font-size: 10px;">{{ memo.author }} <br>{{ memo.posted_dt|date:"M j, Y g:i A"}} </span>
+															
+								</div>					
+							</a>
+
+						{% endfor %}
+					{% endif %}
+				</div>
+			</div>
+			<!--<div class="d-flex justify-content-center">
+				<a href="{% url 'memo_redirect' %}" class="btn-memo">Show All</a>
+			</div> -->
+		</div>
+	</div>
+</div>
+<!-- <script>
+	function loadstuff(event) {
+		event.preventDefault();
+		console.log('clicked!!')
+	}
+</script> -->
+  
+{% endblock %}
+
+

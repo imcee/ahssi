@@ -1,0 +1,17 @@
+{% autoescape off %}
+Hi {{ firstname }},
+
+An account has been created for you to access {{ index_url }} AHSSI Portal.
+To confirm your registration, please click the verify link below which will expire in 2 days.<br>
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+In case the link expires, use the verification code in this {{ index_url }} verification form.
+
+Verification Code: {{ cd }}
+
+
+Regards,
+AHSSI Portal Admin
+
+{% endautoescape %}

@@ -1,0 +1,78 @@
+<!-- templates/shift/email/email_shift.html -->
+
+
+<!DOCTYPE html>
+<html>
+  <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+          <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+      <div class="col-xl-6">
+        <div class="card rounded-3 text-black">
+        <div class="row g-0">
+          <div class="col-lg">
+            <div class="card-body p-md-5 mx-md-4">
+      
+              <center>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width: 1000px;">
+                  <!-- BEGIN EMAIL -->
+                  <tbody>
+                    <tr>
+                      <td align="left" style="padding:30px">
+                        <div style="background-color:#fff; padding:30px;">
+           
+                            <p style="text-align:left">Hi {{ firstname }},<br><br>
+
+                              <b>{{ facility }}</b>  is in need of <b>{{ staff_type }}</b> for the following shifts:<br>
+                              <hr>
+                              <p style="text-align:left; background-color:#26463e;">
+                                
+                                {{ body|safe }}
+                                
+                                <hr>
+                            </p>
+                              <b>To bid for a shift schedule posted, click button below. </b> <br><br>
+                            </p>
+
+                            
+                            <!--<p style="text-align:left;"> 
+                                <b>To bid for a shift schedule posted, click "Bid Schedule" button. </b>
+                            </p>-->
+                            <p style="text-align:center; display:flex; align-items:center; justify-content: center;">
+                                <a target="_blank" style="width: 60%; text-decoration:none; background-color: #92c83e; border: #92c83e 1px solid; color: #3f3f3f; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'bid_shift_auto' username=username facility_cd=facility_cd shift_date=shift_date shift=shift_schedule add_date=add_date record_id=record_id %}">
+                                <strong>Bid for Shift</strong></a>
+                            </p>
+
+                            {% if add_message != None and add_message != '' and add_message != ' ' %}
+                            <p style="text-align:left"> 
+                              <br><br>
+                              {{ add_message }}
+                            </p>
+                            {% endif %}
+                            <p style="text-align:left">    
+                                <br><br>
+                                Regards,<br>
+                                AHSSI Portal Admin
+                            </p> 
+                        
+                        </div>
+                   
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </center>
+      
+            </div>
+          </div>
+          
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    </section>
+  </body>
+   
+</html>
+

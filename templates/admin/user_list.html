@@ -1,0 +1,477 @@
+{% extends 'base.html' %}
+
+{% block title %} Staff List {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+
+<div class="container">
+	<div>
+		<div>
+			<form class="form-inline my-2 my-lg-0" action="{% url 'user_list_view' %}">
+				<div class="search-form">
+					<input class="form-control mr-sm-2 mr-5 search-text" type="search" placeholder="Search Value" aria-label="Search" name="search">
+					<button title="Click again to show all staff" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item">
+		  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#active" role="tab" aria-controls="home" aria-selected="true">Active</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#notactive" role="tab" aria-controls="profile" aria-selected="false">Not Active</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#scheduler" role="tab" aria-controls="profile" aria-selected="false">Schedulers</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#admins" role="tab" aria-controls="profile" aria-selected="false">Admins</a>
+		</li>
+	  </ul>
+	  <div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="active" role="tabpanel" aria-labelledby="active-tab">
+			<div class="card mt-4">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="mb-0">Staff List</h5>
+					<a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'register' %}" style="color: #fff;
+					background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Staff</a>
+				</div>
+				<div class="card-body">
+					<table class="table table-striped table-hover">
+						<thead>
+						<tr>
+							<th scope="col">Username</th>
+							<th scope="col">First Name</th>
+							<th scope="col">Last Name</th>
+							<th scope="col">Email</th>
+							<th scope="col">Contact Number</th>
+							<th scope="col">Designation</th>
+							<th scope="col">Action</th>
+						</tr>
+						</thead>
+						{% if all_user|length > 0 %}
+							<tbody class="user">
+							{% for profile in all_user %}
+							{% if profile.is_active == 1 and profile.is_superuser != 1 and profile.is_staff != 1 %}
+							<tr>
+								<th scope="row">{{profile.username}}</th>
+								<td>{{profile.first_name}}</td>
+								<td>{{profile.last_name}}</td>
+								<td>{{profile.email}}</td>
+								<td>{{profile.contact_number}}</td>
+								<td>{{profile.staff_type_id}}</td>
+								<!-- Modal -->
+								<div class="modal fade" id="deleteModalToggle{{profile.id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+									<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalToggleLabel">Username: {{profile.username}}</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<form method="POST" action="{% url 'remove' id=profile.id %}">
+												<!-- Security token by Django -->
+												{% csrf_token %}
+												Are you sure you want to delete this item? <br>
+										
+										</div>
+										<div class="modal-footer">
+											<input class="btn btn-success" type="submit" value="Yes" />
+											<a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+										</form>
+										</div>
+									</div>
+									</div>
+								</div>
+								<td class="menu-dropdown">
+									<div class="dropdown">
+										<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Action
+										</button>
+										<ul class="dropdown-menu">
+										<li><a class="dropdown-item" href="{% url 'view_user' id=profile.id %}">View</a></li>
+										<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+										<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}">Edit</a></li>
+										<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+										<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{profile.id}}">Delete</a></li>
+										{% if profile.is_active == 1 %}
+											<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Inactivate</a></li>
+										{% else %}
+											<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Activate</a></li>
+										{% endif %}
+										</ul>
+									</div>
+								</td>
+								<td class="mobile-btn mobile-menu">
+									
+										<a class="mobile-icon" href="{% url 'view_user' id=profile.id %}"><i class="fa-solid fa-eye"></i></a>
+										<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+										<a class="mobile-icon" href="{% url 'update' id=profile.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+										<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+										<a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{profile.id}}"><i class="fa-solid fa-trash-can"></i></a>
+										{% if profile.is_active == 1 %}
+											<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+										{% else %}
+											<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+										{% endif %}
+									
+								</td>
+								
+							</tr>
+							
+							{% endif %}
+							{% endfor %}
+							</tbody>
+						{% else %}
+						<tr>
+							<td>No Staff Available</td>
+						</tr>
+						{% endif %}
+					</table>
+				</div>
+
+			</div>
+		</div>
+
+		<!--end tab -->
+		<div class="tab-pane fade pt-4" id="notactive" role="tabpanel" aria-labelledby="profile-tab">
+			<div class="card">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="mb-0">Staff List</h5>
+					<a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'register' %}" style="color: #fff;
+					background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Staff</a>
+				</div>
+				<div class="card-body">
+					<table class="table table-striped table-hover">
+						<thead>
+						<tr>
+							<th scope="col">Username</th>
+							<th scope="col">First Name</th>
+							<th scope="col">Last Name</th>
+							<th scope="col">Email</th>
+							<th scope="col">Contact Number</th>
+							<th scope="col">Designation</th>
+							<th scope="col">Action</th>
+						</tr>
+						</thead>
+						{% if all_user|length > 0 %}
+						<tbody class="user">
+						{% for profile in all_user %}
+								{% if profile.is_active == 0 and profile.is_superuser != 1 and profile.is_staff != 1 %}
+								<tr>
+									<th scope="row">{{profile.username}}</th>
+									<td>{{profile.first_name}}</td>
+									<td>{{profile.last_name}}</td>
+									<td>{{profile.email}}</td>
+									<td>{{profile.contact_number}}</td>
+									<td>{{profile.staff_type_id}}</td>
+								
+									<td class="menu-dropdown">
+										<div class="dropdown">
+											<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+											Action
+											</button>
+											<ul class="dropdown-menu">
+											<li><a class="dropdown-item" href="{% url 'view_user' id=profile.id %}">View</a></li>
+											<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+											<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}">Edit</a></li>
+											<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+											<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}">Delete</a></li>
+											{% if profile.is_active == 1 %}
+												<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Inactivate</a></li>
+											{% else %}
+												<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Activate</a></li>
+											{% endif %}
+											</ul>
+										</div>
+									</td>
+									<td class="mobile-btn mobile-menu">
+										
+											<a class="mobile-icon" href="{% url 'view_user' id=profile.id %}"><i class="fa-solid fa-eye"></i></a>
+											<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+											<a class="mobile-icon" href="{% url 'update' id=profile.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+											<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+											<a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}"><i class="fa-solid fa-trash-can"></i></a>
+											{% if profile.is_active == 1 %}
+												<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+											{% else %}
+												<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+											{% endif %}
+										
+									</td>
+									<!-- Modal -->
+									<div class="modal fade" id="deleteNotactiveModalToggle{{profile.id}}" aria-hidden="true" aria-labelledby="deleteNotactiveModalToggleLabel" tabindex="-1">
+										<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content">
+											<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalToggleLabel">Username: {{profile.username}}</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<form method="POST" action="{% url 'remove' id=profile.id %}">
+													<!-- Security token by Django -->
+													{% csrf_token %}
+													Are you sure you want to delete this item? <br>
+											
+											</div>
+											<div class="modal-footer">
+												<input class="btn btn-success" type="submit" value="Yes" />
+												<a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+											</form>
+											</div>
+										</div>
+										</div>
+									</div>
+								</tr>
+								{% endif %}
+						{% endfor %}
+							</tbody>
+						{% else %}
+						<tr>
+							<td>No Staff Available</td>
+						</tr>	
+						{% endif %}
+					</table>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="tab-pane fade pt-4" id="scheduler" role="tabpanel" aria-labelledby="profile-tab">
+			<div class="card">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<h5 class="mb-0">Staff List</h5>
+					<a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'register' %}" style="color: #fff;
+					background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Staff</a>
+				</div>
+				<div class="card-body">
+					<table class="table table-striped table-hover">
+						<thead>
+						<tr>
+							<th scope="col">Username</th>
+							<th scope="col">First Name</th>
+							<th scope="col">Last Name</th>
+							<th scope="col">Email</th>
+							<th scope="col">Contact Number</th>
+							<th scope="col">Designation</th>
+							{% if user.is_superuser %}
+							<th scope="col">Action</th>
+							{% endif %}
+						</tr>
+						</thead>
+						{% if all_user|length > 0 %}
+						<tbody class="user">
+							{% for profile in all_user %}
+							
+								{% if profile.is_staff == 1 or profile.staff_type_id == 'AHSSI PAYROLL' %}
+								<tr>
+									<th scope="row">{{profile.username}}</th>
+									<td>{{profile.first_name}}</td>
+									<td>{{profile.last_name}}</td>
+									<td>{{profile.email}}</td>
+									<td>{{profile.contact_number}}</td>
+									<td>{{profile.staff_type_id}}</td>
+
+									{% if user.is_superuser %}
+									<td class="menu-dropdown">
+										<div class="dropdown">
+											<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+											Action
+											</button>
+											<ul class="dropdown-menu">
+												<li><a class="dropdown-item" href="{% url 'view_user' id=profile.id %}">View</a></li>
+												<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+												<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}">Edit</a></li>
+												<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+												<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}">Delete</a></li>
+												{% if profile.is_active == 1 %}
+													<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Inactivate</a></li>
+												{% else %}
+													<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Activate</a></li>
+												{% endif %}
+											</ul>
+										</div>
+									</td>
+									
+									<td class="mobile-btn mobile-menu">
+										
+											<a class="mobile-icon" href="#"><i class="fa-solid fa-eye"></i></a>
+											<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+											<a class="mobile-icon" href="{% url 'update' id=profile.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+											<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+											<a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}"><i class="fa-solid fa-trash-can"></i></a>
+											{% if profile.is_active == 1 %}
+												<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+											{% else %}
+												<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+											{% endif %}
+										
+									</td>
+									{% endif %}
+									<!-- Modal -->
+									<div class="modal fade" id="deleteNotactiveModalToggle{{profile.id}}" aria-hidden="true" aria-labelledby="deleteNotactiveModalToggleLabel" tabindex="-1">
+										<div class="modal-dialog modal-dialog-centered">
+										<div class="modal-content">
+											<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalToggleLabel">Username: {{profile.username}}</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												<form method="POST" action="{% url 'remove' id=profile.id %}">
+													<!-- Security token by Django -->
+													{% csrf_token %}
+													Are you sure you want to delete this item? <br>
+											
+											</div>
+											<div class="modal-footer">
+												<input class="btn btn-success" type="submit" value="Yes" />
+												<a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+											</form>
+											</div>
+										</div>
+										</div>
+									</div>
+								</tr>
+								{% endif %}
+						{% endfor %}
+							</tbody>
+						{% else %}
+						<tr>
+							<td>No Staff Available</td>
+						</tr>								
+						{% endif %}
+					</table>
+				</div>
+			</div>
+		</div>
+
+	<!-- ADMIN -->
+	<div class="tab-pane fade pt-4" id="admins" role="tabpanel" aria-labelledby="profile-tab">
+		<div class="card">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<h5 class="mb-0">Staff List</h5>
+				<a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'register' %}" style="color: #fff;
+				background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Staff</a>
+			</div>
+			<div class="card-body">
+				<table class="table table-striped table-hover">
+					<thead>
+					<tr>
+						<th scope="col">Username</th>
+						<th scope="col">First Name</th>
+						<th scope="col">Last Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Contact Number</th>
+						<th scope="col">Designation</th>
+						{% if user.is_superuser %}
+						<th scope="col">Action</th>
+						{% endif %}
+					</tr>
+					</thead>
+					{% if all_user|length > 0 %}
+					<tbody class="user">
+						{% for profile in all_user %}
+						
+							{% if profile.is_superuser == 1 %}
+							<tr>
+								<th scope="row">{{profile.username}}</th>
+								<td>{{profile.first_name}}</td>
+								<td>{{profile.last_name}}</td>
+								<td>{{profile.email}}</td>
+								<td>{{profile.contact_number}}</td>
+								<td>{{profile.staff_type_id}}</td>
+								
+								{% if user.is_superuser %}
+								<td class="menu-dropdown">
+									<div class="dropdown">
+										<button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+										Action
+										</button>
+										<ul class="dropdown-menu">
+										<li><a class="dropdown-item" href="{% url 'view_user' id=profile.id %}">View</a></li>
+										<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+										<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}">Edit</a></li>
+										<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+										<li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}">Delete</a></li>
+										{% if profile.is_active == 1 %}
+											<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Inactivate</a></li>
+										{% else %}
+											<li><a class="dropdown-item" href="{% url 'block' id=profile.id %}">Activate</a></li>
+										{% endif %}
+										</ul>
+									</div>
+								</td>
+								<td class="mobile-btn mobile-menu">
+									
+										<a class="mobile-icon" href="#"><i class="fa-solid fa-eye"></i></a>
+										<!--<li><a class="dropdown-item" href="{% url 'update' id=profile.id %}"  data-bs-toggle="modal" data-bs-target="#exampleModalToggle">Edit</a></li>  -->
+										<a class="mobile-icon" href="{% url 'update' id=profile.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+										<!-- <li><a class="dropdown-item" href="{% url 'remove' id=profile.id %}">Delete</a></li> -->
+										<a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle{{profile.id}}"><i class="fa-solid fa-trash-can"></i></a>
+										{% if profile.is_active == 1 %}
+											<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+										{% else %}
+											<a class="mobile-icon" href="{% url 'block' id=profile.id %}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+										{% endif %}
+									
+								</td>
+								{% endif %}
+								<!-- Modal -->
+								<div class="modal fade" id="deleteNotactiveModalToggle{{profile.id}}" aria-hidden="true" aria-labelledby="deleteNotactiveModalToggleLabel" tabindex="-1">
+									<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalToggleLabel">Username: {{profile.username}}</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<form method="POST" action="{% url 'remove' id=profile.id %}">
+												<!-- Security token by Django -->
+												{% csrf_token %}
+												Are you sure you want to delete this item? <br>
+										
+										</div>
+										<div class="modal-footer">
+											<input class="btn btn-success" type="submit" value="Yes" />
+											<a href="{% url 'user_list_view' %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+										</form>
+										</div>
+									</div>
+									</div>
+								</div>
+							</tr>
+							{% endif %}
+					{% endfor %}
+						</tbody>
+					{% else %}
+					<tr>
+						<td>No Staff Available</td>
+					</tr>								
+					{% endif %}
+				</table>
+			</div>
+		</div>
+	</div>
+
+	</div>
+	<div class="flex justify-content-center align-self-center" >
+        <a href="{% url 'export_data' data='user'%}" style="font-size: 13px; color:#495057; margin-left: 45%;">Export Data</a>
+    </div>
+  </div>
+
+  
+{% endblock %}
+
+

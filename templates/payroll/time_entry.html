@@ -1,0 +1,1270 @@
+{% extends 'base.html' %}
+
+{% block title %} Time Entry {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages" >
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="width: 100%;">{{ message }}
+             <a data-bs-toggle="modal" data-bs-target="#viewModalToggle{{time.id}}" style="margin-left: 67%; cursor:pointer;">View Timesheet</a>
+            
+        </li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+    width: 83%;
+}
+
+.btn-time{
+
+    font-size: 0.85rem;
+}
+
+#id_facility, #id_username {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.45rem;
+    font-size: 0.85rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+#username_id, #id_first_name, #id_last_name, #id_facility_name, #id_shift_date,
+    #id_travel_time_hrs, #id_travel_time_mins, #id_max_mileage, #id_si_mileage_limit,
+     #id_reg_work_hrs,  #id_distance, #id_distance_rate, #id_ot_work_hrs, #id_stat_work_hrs,
+     #id_ot_stat_hrs, #id_travel_time_hrs, #id_travel_time_mins, #id_nic_hrs, #id_snp_hrs, #id_orientation_hrs,
+     #id_adjustment, #id_adj_amt, #id_apply_to_si
+{
+    /* display: block;*/
+    width: 78px;
+    margin-left:0px;
+    padding: 0.375rem 0.45rem;
+    font-size: 0.99rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+#id_staff_type, #id_reg_rate
+{
+    width: 78px;
+    margin-left:0px;
+    padding: 0.375rem 0.45rem;
+    font-size: 0.99rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #e6e5e5;
+    background-clip: padding-box;
+    border: 1px solid #bbbcbe;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+
+#id_distance{
+    width: 85px;
+}
+
+#id_shift_date{
+    width: 150px;
+}
+
+#id_adj_type, #id_apply_to
+{
+    display: block;
+    width: 150px;
+    text-align: center;
+    padding: 0.55rem 0.1rem;
+    font-size: 0.85rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+
+}
+
+#id_adj_reason, #id_remarks
+{
+    /* display: block;*/
+    width: 350px;
+    margin-left:0px;
+    padding: 0.375rem 0.45rem;
+    font-size: 0.99rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+.setting-container-rate {
+    /*display: grid;*/
+    padding: 30px;
+    grid-template-columns: 80%;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+.bghover:hover {
+    background-color: #edf0f2;
+}
+
+.tab-content{
+
+	padding-left:10px;
+    padding-right:10px;
+}
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 40%;
+}
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+.workspace {
+    overflow: hidden;
+}
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 35rem;
+    border: 0px;
+    margin-top: 30px !important;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+
+	text-align: left;
+	width: 100%;
+	margin:auto;
+	height: 50rem;
+	
+
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 20rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgba(43, 42, 42, 0.14) 0px 4px 20px 0px, rgba(13, 13, 14, 0.4) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(67, 160, 71), rgb(102, 187, 106));
+
+	
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+.nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+}
+
+.card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.search-form {
+    margin-top: 30px;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    padding: 5px 5px;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+    text-align: center;
+}
+
+table > thead > tr {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+    background-color: transparent;
+	font-size: 0.85rem;
+}
+
+
+
+.th-rate{
+	padding: 10px;
+	border-bottom: 1px solid rgba(211,211,211,1);
+	font-size: 15px;
+	text-align: right;
+	width: 20%;
+}
+
+.td-rate{
+	text-align: center;
+	padding: 13px;
+	font-size: 15px;
+	width: 15%;
+}
+
+.td-hide{
+	color: rgb(255, 255, 255);
+	color: rgba(255, 255, 255, 0.5);
+}
+
+
+.td-unit{
+
+	color:darkgrey;
+	width:10%;
+}
+
+.td-form{
+	text-align: left;
+	padding: 13.1px;
+	font-size: 14px;
+	width: 20%;
+	
+}
+
+
+table > th {
+    text-align: center;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+
+.row-div{
+  margin-left:-5px;
+  margin-right:-5px;
+
+}
+
+.column {
+  float: left;
+  width: 95%;
+  padding: 0;
+  margin-left: 20px;
+
+}
+.column-form{
+  float: left;
+  width: 15%;
+}
+
+.errorlist{
+    background-color: #e57487;
+}
+
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+		}
+
+	}
+
+    @media only screen and (max-width: 991px){
+        #id_staff_type{
+        display: block;
+        }
+
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+label{
+
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 7px;
+
+}
+
+form input:invalid, select:invalid, textarea:invalid {
+  border-color: red;
+}
+
+</style>
+<div class="top-space">
+
+</div>
+
+
+<div class="setting-container-rate">
+    <div class="setting-menu">
+
+	  	<div class="card-rd">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation">
+					<span class="nav-tabs-title">Add Time Entry {{time.id}}</span>
+					<ul class="nav nav-tabs" id="navTab" role="tablist">
+
+					</ul>
+		
+				</div>
+			
+		   </div>
+
+           {% if time.id != None %}
+            <!-- Modal Delete Timesheet -->
+            <div class="modal fade" id="deleteModalToggle{{time.id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="width: 50%; margin: auto;">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">Delete Timesheet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="GET" action="{% url 'delete_time' id=time.id %}">
+
+                            {% csrf_token %}
+                            Are you sure you want to delete this timesheet for {{time.first_name}} {{time.last_name}}? <br><br>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-success" type="submit" value="Yes"/>
+                        <a data-bs-toggle="modal" data-bs-target="#viewModalToggle{{time.id}}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>
+                    
+                    </div>
+                    </form>
+                    
+                </div>
+                </div>
+            </div>
+            {% endif %}
+
+
+            <!-- Modal View Timesheet -->
+            <div class="modal fade" id="viewModalToggle{{time.id}}" aria-hidden="true" aria-labelledby="viewModalToggleLabel" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="left: 18%; width: 81%; position: fixed; /*overflow: auto;*/">
+                        <div class="modal-header" style="width: 179%;">
+                        <h5 class="modal-title" id="exampleModalToggleLabel">{{time.first_name}} {{time.last_name}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position:fixed; left:96%;"></button>
+                        </div>
+                        <div class="modal-body" style="width: 100%; overflow-x: auto;">
+                            <div style="text-align:left; display:flex;">
+                            <span style="text-align:left; margin-left: 10px;"><p><b>Invoice #:</b> {% if time.invoice_no != None %} - {% else %} {{time.invoice_no}} {% endif %}</p> </span>
+                        
+                            
+                                <div style="position: relative; right:-76%;">
+                                <span style="text-align:left;"><b>Created Date:</b> {{time.id}}</span>
+                                
+                                </div>
+                            </div>
+                            
+                            <table class="table table-bordered" style="margin-bottom: 2em;"> 
+                                <thead style="border-width: 1px !important;">
+                                    <tr style="text-align: center;">
+                                        <th scope="col" colspan="3"></th>
+                                        <th scope="col" colspan="4">Regular</th>
+                                        <th scope="col" colspan="3">Overtime</th>
+                                        <th scope="col" colspan="3">Statutory</th>
+                                        <th scope="col" colspan="3">OT/Statutory</th>
+                                        <th scope="col" colspan="3">Travel</th>
+                                        <th scope="col" colspan="3">Distance</th>
+                                        <th scope="col" colspan="4"></th>
+                                        <th scope="col" colspan="1"></th>
+                                        <th scope="col" colspan="4">Adjustment</th>
+
+                                    </tr>
+                                    <tr style="text-align: center;">
+                                        <th scope="col" style="width: 10%;">Date</th>
+                                        <th scope="col">Location</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Work Hours</th>
+                                        <th scope="col">Orientation Hours</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (Reg)</th>
+
+                                        <th scope="col">Work Hours</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (OT)</th>
+
+                                        <th scope="col">Work Hours</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (Stat)</th>
+
+                                        <th scope="col">Work Hours</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (OT/Stat)</th>
+
+                                        <th scope="col">Hours</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (Travel)</th>	
+                                        
+                                        <th scope="col">Distance</th>
+                                        <th scope="col">Rate</th>
+                                        <th scope="col">Amount (KMS)</th>
+
+                                        <th scope="col">Per Diem</th>
+                                        <th scope="col">Nurse in Charge</th>
+                                        <th scope="col">Specialty Nurse Pay</th>
+                                        <th scope="col">Total Amount</th>
+                                        <th scope="col">Shift Remarks</th>
+                                        <th scope="col">Adjustment Type</th>
+                                        <th scope="col">Applying To</th>
+                                        <th scope="col">Adjustment Amount</th>
+                                        <th scope="col">Adjustment Reason</th>
+                                    </tr>	
+                                        
+                                </thead>
+                                <tbody class="table">
+                                    <tr style="white-space: nowrap;";> 
+
+                                        <td>
+                                            {{time.shift_date}}
+                                        </td>
+                                        <td>
+                                            {{time.facility_name}}
+                                        </td>
+                                        <td>
+                                            {{time.staff_type}}
+                                        </td>
+                                        <td>
+                                            {{time.reg_work_hrs}}
+                                        </td>
+                                        <td>
+                                            {{time.orientation_hrs}}
+                                        </td>
+                                        <td>
+                                            {{time.reg_rate}}
+                                        </td>
+                                        <td>
+                                            {{time.reg_amt|floatformat:'2'}}
+                                        </td>
+                                        <td>
+                                            {% if time.ot_work_hrs == 0 %}
+                                                 
+                                            {% else %}
+                                                {{time.ot_work_hrs}}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.ot_work_hrs == 0 %}
+                                                -
+                                            {% else %}
+                                                {{time.ot_rate}}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.ot_work_hrs == 0 %}
+                                                 
+                                            {% else %}
+                                                {{time.ot_amt|floatformat:'2'}}
+                                            {% endif %}
+                                            
+                                        </td>
+
+                                        <td>
+                                            {% if time.stat_work_hrs == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.stat_work_hrs}}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.stat_work_hrs == 0 %}
+                                                -
+                                            {% else %}
+                                                {{time.stat_rate}}
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+                                            {% if time.stat_work_hrs == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.stat_amt|floatformat:'2'}}
+                                            {% endif %}
+                                        </td>
+
+
+                                        <td>
+                                            {% if time.ot_stat_hrs == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.ot_stat_hrs}}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.ot_stat_hrs == 0 %}
+                                                -
+                                            {% else %}
+                                                {{time.ot_stat_rate}}
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+                                            {% if time.ot_stat_hrs == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.ot_stat_amt|floatformat:'2'}}
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <td>
+                                            {{time.travel_time}}
+                                        </td>
+
+                                        <td>
+                                            {{time.travel_rate}}
+                                        </td>
+
+                                        <td>
+                                            {{time.travel_amt|floatformat:'2'}}
+                                        </td>															
+
+                                        <td>
+                                            {{time.distance}}
+                                        </td>
+
+                                        <td>
+                                            {{time.distance_rate}}
+                                        </td>
+
+                                        <td>
+                                            {{time.distance_amt|floatformat:'2'}}
+                                        </td>
+
+                                        <td>
+                                            {{time.perdiem|floatformat:'2'}}
+                                        </td>
+                                        <td>
+                                            
+                                            {% if time.nic_amt == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.nic_amt|floatformat:'2'}}
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            
+                                            {% if time.snp_amt == 0 %}
+                                                
+                                            {% else %}
+                                                {{time.snp_amt|floatformat:'2'}}
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {{time.total_amt|floatformat:'2'}}
+                                        </td>
+                                        <td>
+                                            {{time.remarks}}
+                                        </td>
+                                        <td>
+                                            {% if time.adjustment %}
+                                                {% if time.apply_to == 'IC Only' or time.apply_to == 'IC and SI' %}
+                                                    {{time.adj_type}}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.adjustment %}
+                                                {% if time.apply_to == 'IC Only' or time.apply_to == 'IC and SI' %}
+                                                    {{time.apply_to}}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.adjustment %}
+                                                {% if time.apply_to == 'IC Only' or time.apply_to == 'IC and SI' %}
+                                                    {{time.adj_amt}}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if time.adjustment %}
+                                                {% if time.apply_to == 'IC Only' or time.apply_to == 'IC and SI' %}
+                                                    {{time.adj_reason}}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                                </table>
+                                <div style="text-align:left; display:flex;">
+                                    <span style="text-align:left; margin-left: 10px;"><p><b>Sales Invoice #:</b> {% if time.si_invoice_no != None %} {{time.si_invoice_no}} {% else %} - {% endif %}</p> </span>
+                                                                
+                                </div>
+
+                                <table class="table table-bordered">
+                                    <thead style="border-width: 1px !important;">
+                                        <tr style="text-align: center;">
+                                            <th scope="col" colspan="3"></th>
+                                            <th scope="col" colspan="4">Regular</th>
+                                            <th scope="col" colspan="3">Overtime</th>
+                                            <th scope="col" colspan="3">Statutory</th>
+                                            <th scope="col" colspan="3">OT/Statutory</th>
+                                            <th scope="col" colspan="3">Travel</th>
+                                            <th scope="col" colspan="3">Distance</th>
+                                            <th scope="col" colspan="4"></th>
+                                            <th scope="col" colspan="1"></th>
+                                            <th scope="col" colspan="4">Adjustment</th>
+
+                                        </tr>
+                                        <tr style="text-align: center;">
+                                            <th scope="col" style="width: 10%;">Date</th>
+                                            <th scope="col">Location</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Work Hours</th>
+                                            <th scope="col">Orientation Hours</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (Reg)</th>
+
+                                            <th scope="col">Work Hours</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (OT)</th>
+
+                                            <th scope="col">Work Hours</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (Stat)</th>
+
+                                            <th scope="col">Work Hours</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (OT/Stat)</th>
+
+                                            <th scope="col">Hours</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (Travel)</th>	
+                                            
+                                            <th scope="col">Distance</th>
+                                            <th scope="col">Rate</th>
+                                            <th scope="col">Amount (KMS)</th>
+
+                                            <th scope="col">Per Diem</th>
+                                            <th scope="col">Nurse in Charge</th>
+                                            <th scope="col">Specialty Nurse Pay</th>
+                                            <th scope="col">Total Amount</th>
+                                            <th scope="col">Shift Remarks</th>
+                                            <th scope="col">Adjustment Type</th>
+                                            <th scope="col">Applying To</th>
+                                            <th scope="col">Adjustment Amount</th>
+                                            <th scope="col">Adjustment Reason</th>
+                                        </tr>	
+                                            
+                                    </thead>
+                                    <tbody class="table">
+                                        <tr style="white-space: nowrap;";> 
+
+                                            <td>
+                                                {{time.shift_date}}
+                                            </td>
+                                            <td>
+                                                {{time.facility_name}}
+                                            </td>
+                                            <td>
+                                                {{time.staff_type}}
+                                            </td>
+                                            <td>
+                                                {{time.reg_work_hrs_si}}
+                                            </td>
+                                            <td>
+                                                {{time.orientation_hrs}}
+                                            </td>
+                                            <td>
+                                                {{time.reg_rate_si}}
+                                            </td>
+                                            <td>
+                                                {{time.reg_amt_si|floatformat:'2'}}
+                                            </td>
+                                            <td>
+                                                {% if time.ot_work_hrs_si == 0 %}
+                                                     
+                                                {% else %}
+                                                    {{time.ot_work_hrs_si}}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.ot_work_hrs_si == 0 %}
+                                                    -
+                                                {% else %}
+                                                    {{time.ot_rate_si}}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.ot_work_hrs_si == 0 %}
+                                                     
+                                                {% else %}
+                                                    {{time.ot_amt_si|floatformat:'2'}}
+                                                {% endif %}
+                                                
+                                            </td>
+
+                                            <td>
+                                                {% if time.stat_work_hrs_si == 0 %}
+                                                    
+                                                {% else %}
+                                                    {{time.stat_work_hrs_si}}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.stat_work_hrs_si == 0 %}
+                                                    -
+                                                {% else %}
+                                                    {{time.stat_rate_si}}
+                                                {% endif %}
+
+                                            </td>
+                                            <td>
+                                                {% if time.stat_work_hrs_si == 0 %}
+                                                    
+                                                {% else %}
+                                                    {{time.stat_amt_si|floatformat:'2'}}
+                                                {% endif %}
+                                            </td>
+
+
+                                            <td>
+                                                {% if time.ot_stat_hrs_si == 0 %}
+                                                    
+                                                {% else %}
+                                                    {{time.ot_stat_hrs_si}}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.ot_stat_hrs_si == 0 %}
+                                                    -
+                                                {% else %}
+                                                    {{time.ot_stat_rate_si}}
+                                                {% endif %}
+
+                                            </td>
+                                            <td>
+                                                {% if time.ot_stat_hrs_si == 0 %}
+                                                    
+                                                {% else %}
+                                                    {{time.ot_stat_amt_si|floatformat:'2'}}
+                                                {% endif %}
+                                            </td>
+                                            
+                                            <td>
+                                                {{time.travel_time_si}}
+                                            </td>
+
+                                            <td>
+                                                {{time.travel_rate_si}}
+                                            </td>
+
+                                            <td>
+                                                {{time.travel_amt_si|floatformat:'2'}}
+                                            </td>															
+
+                                            <td>
+                                                {{time.distance_si}}
+                                            </td>
+
+                                            <td>
+                                                {{time.distance_rate_si}}
+                                            </td>
+
+                                            <td>
+                                                {{time.distance_amt_si|floatformat:'2'}}
+                                            </td>
+
+                                            <td style="background-color: #8d8a8a;">
+                                        
+                                            </td>
+                                            <td>																	
+                                                {% if time.nic_amt == 0 %}
+                                                    
+                                                {% else %}
+                                                    {{time.nic_amt|floatformat:'2'}}
+                                                {% endif %}
+                                            </td>
+
+                                            <td style="background-color: #8d8a8a;">
+                                                
+                                            </td>
+
+                                            <td>
+                                                {{time.total_amt_si|floatformat:'2'}}
+                                            </td>
+                                            <td>
+                                                {{time.remarks}}
+                                            </td>
+                                            <td>
+                                                {% if time.adjustment %}
+                                                    {% if time.apply_to == 'SI Only' or time.apply_to == 'IC and SI' %}
+                                                        {{time.adj_type}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.adjustment %}
+                                                    {% if time.apply_to == 'SI Only' or time.apply_to == 'IC and SI' %}
+                                                        {{time.apply_to}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.adjustment %}
+                                                    {% if time.apply_to == 'SI Only' or time.apply_to == 'IC and SI' %}
+                                                        {{time.adj_amt}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if time.adjustment %}
+                                                    {% if time.apply_to == 'SI Only' or time.apply_to == 'IC and SI' %}
+                                                        {{time.adj_reason}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                        </div>
+                        <div class="modal-footer" style="width: 164%; height: 3rem; display: unset;">
+                            <!--<input class="btn btn-success" type="submit" value="Post" />
+                            <a href="#"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>-->
+                            <a data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{time.id}}"><img width="15" src="{% static 'img/delete.png' %}" alt="Delete" title="Delete" class="logo" style="position:fixed; left:94%; margin-left:-8px;"></a>
+                            <a href="{% url 'edit_time' id=time.id %}"  id="id_edit"><img width="17" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit" class="logo" style="position:fixed; left:95%;"></a>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+		   <div class="card-body" style="/*overflow-x: auto;*/ margin-top: 30px;">
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="active-tab">
+
+                        <form method="GET" action="{% url 'time_entry' %}"  id="load-form">
+                           {% csrf_token %}
+                            {{form.as_p}}
+                        
+                        <input type="submit" class="btn btn-outline-success btn-time"  value="Load Form" name="load" id="id_load" style="position:relative; margin-top:10px; left: 87%;">
+                        
+                        </form>
+					</div>
+				</div>
+
+                <hr>
+
+                <div style="overflow-x: auto; height: 145px;">
+                    <form method="POST" action="{% url 'time_entry' %}"  id="sheet-form">
+                        {% csrf_token %}
+                        
+                        {{ timeForm.form_errors.as_ul }}
+                        {{ timeForm.non_field_errors }}
+                      <table id="timeForm" class="form">
+                       
+                        <thead style="text-align: center;">
+          
+                         <tr>
+                          {% for field in timeForm.visible_fields %}
+                              <th>{{ field.label|capfirst }}</th>
+                          {% endfor %}
+                        </tr>
+                       </thead>
+                        <tr class="{% cycle row1 row2 %}">
+                        {% for field in timeForm.visible_fields %}
+                            
+                          <td>
+                          
+                          {% if forloop.first %}
+                            {% for hidden in timeForm.hidden_fields %}
+                            {{ hidden }}
+                            {% endfor %}
+                          {% endif %}
+                            {{ field }}
+                            {{ field.errors.as_ul }}
+                           </td>
+                          
+                        {% endfor %}
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div style="position: relative; top:9px; left: 79%; max-width: 225px;">
+                        <a href="{% url 'timesheet' %}"><input class="btn btn-secondary btn-time" type="button" name="Done" value="Done" style="position:relative;"></a>
+                        <a href="{% url 'time_entry' %}"><input class="btn btn-outline-success btn-time" type="button" name="Clear" value="Clear" style="position:relative;"></a>
+                        <input type="submit" class="btn btn-outline-success btn-time"  value="Submit" name="time" style="position:relative; ">
+
+                    </form>
+
+    
+                    </div>
+			</div>
+
+     
+	   	</div>
+          
+	</div>
+	
+</div>
+
+<script>
+$(document).ready(function()
+{
+    $('#id_username').select2({ width: '100%' });
+    $('#id_facility').select2({ width: '100%' });
+
+});
+var $headers = $('#timeForm th');
+var $row = $('#timeForm td');
+
+console.log($row)
+
+$headers.attr("id", function() {
+  return $(this)
+    .text() // get the th text
+    .trim() // remove spaces from start and the end
+    .toLowerCase() // optional
+    .replace(/\s/g, '_'); // convert all spaces to underscores
+});
+
+$row.attr("id", function() {
+  return $(this)
+    .text() // get the th text
+    .trim() // remove spaces from start and the end
+    .toLowerCase() // optional
+    .replace(/\s/g, '_'); // convert all spaces to underscores
+});
+
+
+if ($('#id_adjustment').prop('checked')){
+    $('#id_adj_type').removeAttr('disabled');
+    $('#id_adj_type').css('background-color', '#fff');
+
+    $('#id_apply_to').removeAttr('disabled');
+    $('#id_apply_to').css('background-color', '#fff');
+
+    $('#id_adj_reason').prop('readonly',false);
+    $('#id_adj_reason').css('background-color', '#fff');
+
+    $('#id_adj_amt').prop('readonly',false);
+    $('#id_adj_amt').css('background-color', '#fff');
+
+}
+else{
+    $('#id_adj_type').attr('disabled','');
+    $('#id_adj_type').css('background-color', '#e6e5e5');
+
+    $('#id_apply_to').attr('disabled','');
+    $('#id_apply_to').css('background-color', '#e6e5e5');
+
+    $('#id_adj_reason').prop('readonly',true);
+    $('#id_adj_reason').css('background-color', '#e6e5e5');
+
+    $('#id_adj_amt').prop('readonly',true);
+    $('#id_adj_amt').css('background-color', '#e6e5e5');
+}
+
+$('#id_adjustment').on('change', function () {
+    if ($('#id_adjustment').prop('checked')){
+        $('#id_adj_type').removeAttr('disabled');
+        $('#id_adj_type').css('background-color', '#fff');
+
+        $('#id_apply_to').removeAttr('disabled');
+        $('#id_apply_to').css('background-color', '#fff');
+
+        $('#id_adj_reason').prop('readonly',false);
+        $('#id_adj_reason').css('background-color', '#fff');
+    }
+    else{
+        $('#id_adj_type').attr('disabled','');
+        $('#id_adj_type').css('background-color', '#e6e5e5');
+        $('#id_adj_type').val('');
+
+        $('#id_apply_to').attr('disabled','');
+        $('#id_apply_to').css('background-color', '#e6e5e5');
+        $('#id_apply_to').val('');
+
+        $('#id_adj_reason').prop('readonly',true);
+        $('#id_adj_reason').css('background-color', '#e6e5e5');
+        $('#id_adj_reason').val('');
+
+        $('#id_adj_amt').prop('readonly',true);
+        $('#id_adj_amt').css('background-color', '#e6e5e5');
+        $('#id_adj_amt').val(0);
+
+    }
+});
+
+
+var typ = ["Shift Adjustment", ""];
+var ic_only = ["Shift Adjustment", "Breach of Contract"];
+
+$('#id_adj_type').on('change', function () {
+
+    console.log($.inArray($(this).val(), typ))
+    
+    if ($.inArray($(this).val(), typ)==-1) {
+        $('#id_adj_amt').prop('readonly',false);
+        $('#id_adj_amt').css('background-color', '#fff');
+
+    } else {
+        $('#id_adj_amt').prop('readonly',true);
+        $('#id_adj_amt').css('background-color', '#e6e5e5');
+    }
+
+    // DISABLE APPLY TO //
+    var value = $("#id_adj_type option:selected").val();
+
+    console.log(value)
+
+    if (value === '') 
+        return;
+
+    if ($.inArray(value, ic_only) > -1) {
+        $("#id_apply_to option[value='SI Only']").prop('disabled',true);
+        $("#id_apply_to option[value='IC and SI']").prop('disabled',true);
+    }
+    else {
+        $("#id_apply_to option[value='SI Only']").prop('disabled',false);
+        $("#id_apply_to option[value='IC and SI']").prop('disabled',false);
+    }
+
+    //$(this).val('');
+
+});
+
+</script>
+
+{% endblock %}
+
+

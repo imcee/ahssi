@@ -1,0 +1,151 @@
+<!-- registration/login.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<!--
+{% if next %}
+    {% if user.is_authenticated %}
+       <p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>
+    {% else %}
+        <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+-->
+{% load static %}
+<style>
+    .nav-links {
+        display:none;
+    }
+    #id_username, #id_password {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+    .col-lg-6.d-flex.align-items-center.gradient-custom-2 {
+      background: linear-gradient(180.5deg, rgb(0, 128, 128) 8.5%, rgb(174, 206, 100) 118.2%);
+    }
+    .gradient-custom-btn{
+      /* background: linear-gradient(to top, #9be15d 0%, #00e3ae 100%); */
+      background: #2a2e30;
+      width: 300px;
+      color: #fff;
+    }
+
+    .btn-login:hover{
+      color: #fff;
+      /* background: #77aa77; */
+      background:#26580F;
+    }
+
+    .btn-web:hover{
+      background:#26580F;
+      color:#fff;
+    }
+
+    .btn-web{
+      margin-top:20px;
+    }
+
+    .title{
+      margin-top:30px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+
+    .description{
+      text-align: center;
+    }
+    
+</style>
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<body style="background-color: #eee;">
+<section class="mt-5 py-5" style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-xl-10">
+        <div class="card rounded-3 text-black">
+          <div class="row g-0">
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2 order-2 order-md-1">
+              <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                <h4 class="title">Alliance Healthcare Staffing Services Inc.</h4>
+                <p class="small mb-0 text-justify description">Alliance Healthcare Staffing Services Inc. started providing services for Hospitals, Personal Care Home and Home Care in Manitoba, Canada in 2020.
+                  </p>
+                <div class="text-center mt-5">
+                  <a class="btn btn-web btn-block fa-lg gradient-custom-btn mb-3" target="_blank" href="https://ahssi.ca">AHSSI Website</a>
+                </div>
+                  
+              </div>
+            </div>
+            
+            <div class="col-lg-6 order-1 order-md-2">
+              <div class="card-body p-md-5 mx-md-4">
+
+                <div class="text-center py-5">
+                  <img src="{% static 'img/alliancehealthcare-smalll.png' %}"
+                    style="width: 185px;" alt="logo">
+                  
+                </div>
+
+                <form method="post" action="{% url 'login' %}">
+                  {% csrf_token %}
+                  <p>Please login to your account</p>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form2Example11">{{ form.username.label_tag }}</label>
+                    {{ form.username }}
+                    
+                  </div>
+
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form2Example22">{{ form.password.label_tag }}</label>
+                    {{ form.password }}
+                    
+                  </div>
+
+                  <div class="text-center pt-1 pb-1">
+                    <button class="btn btn-login btn-block fa-lg gradient-custom-btn mb-3" type="submit">Log
+                      in</button>
+                  </div>
+
+                  <div class="text-center mb-5">
+                    <a class="text-muted" href="{% url 'password_reset' %}">Forgot password?</a><br>
+                  </div>
+             
+
+                  {% if form.errors %}
+                <p>Your username and password didn't match. Please try again.</p>
+                {% endif %}
+                <div class="py-2 text-center">
+                    <input type="hidden" name="next" value="{{ next }}">
+                </div>
+
+                </form>
+
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+{% endblock %}

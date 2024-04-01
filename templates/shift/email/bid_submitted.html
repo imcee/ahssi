@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+          <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+      <div class="col-xl-6">
+        <div class="card rounded-3 text-black">
+        <div class="row g-0">
+          <div class="col-lg">
+            <div class="card-body p-md-5 mx-md-4">
+      
+              <center>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width:700px;">
+                  <!-- BEGIN EMAIL -->
+                  <tbody>
+
+                    {% if bid_type == 'adhoc' %}
+                    <tr>
+                      <td align="left" style="padding:30px">
+                        <div style="background-color:#fff; padding:30px;">
+           
+                          <h1>Bid Details</h1>
+                          <p>
+                              {% comment %}<b>Facility Name:</b> {{ facility_name }} <br>{% endcomment %}
+                              <b>Staff Name:</b> {{ name|upper }}<br>
+                              <b>Staff Rating:</b> {{ percentage|floatformat:1 }}% 
+                              
+                              {% if rating|floatformat:0 == '0' %}
+                              <img width="90" src="{% static 'img/star-0.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '1' %}
+                              <img width="90" src="{% static 'img/star-1.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '2' %}
+                                <img width="90" src="{% static 'img/star-2.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '3' %}
+                                <img width="90" src="{% static 'img/star-3.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '4' %}
+                                <img width="90" src="{% static 'img/star-4.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '5' %}
+                                <img width="90" src="{% static 'img/star-5.png' %}" style="vertical-align: bottom;">
+                              {% endif %}
+                              <br><br>
+
+                              <b>Designation:</b> {{ staff_type }}<br>
+                              <b>Shift Date:</b> {{ shift_date }}<br>
+                              <b>Shift Schedule:</b> {{ schedule }}<br>
+
+                              {% if message != "" or message != None %}
+                                <b>Remarks:</b> {{ message }}<br>
+                              {% endif %}
+
+                          </p>
+
+                          <p>
+                            <br>For any concerns, please contact AHSSI Admin.
+                          </p>
+                        
+                        </div>
+                   
+                    </td>
+                  </tr>
+
+                    {% else %}
+                    <tr>
+                      <td align="left" style="padding:30px">
+                        <div style="background-color:#fff; padding:30px;">
+           
+                          <h1>Bid Details</h1>
+                          <p>
+                              <b>Facility Name:</b> {{ facility_name }} <br>
+                              <b>Bid Status:</b> {{ bid_status }}<br>
+                              <b>Staff Rating:</b> {{ percentage|floatformat:1 }}%
+
+                              {% if rating|floatformat:0 == '0' %}
+                                <img width="90" src="{% static 'img/star-0.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '1' %}
+                                <img width="90" src="{% static 'img/star-1.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '2' %}
+                                <img width="90" src="{% static 'img/star-2.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '3' %}
+                                <img width="90" src="{% static 'img/star-3.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '4' %}
+                                <img width="90" src="{% static 'img/star-4.png' %}" style="vertical-align: bottom;">
+                              {% elif rating|floatformat:0 == '5' %}
+                                <img width="90" src="{% static 'img/star-5.png' %}" style="vertical-align: bottom;">
+                              {% endif %}
+                              <br><br>
+
+                              {% for n in count %}
+                             <!-- {% with s=n|stringformat:"s" %}
+                                  Test: {{ "shift_date_"|add:s }} <br>
+                              {% endwith %}-->
+
+                                {% if n == 1 %}
+                                  <b>Bid ID:</b> {{ bid_id_1 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                  <b>Shift Schedule:</b> {{ shift_date_1 }} / {{ shift_schedule_1 }}<br><br>
+                                
+                                {% endif %}
+                                {% if n == 2 %}
+                                  <b>Bid ID:</b> {{ bid_id_2 }}<br>
+                                    <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                    <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_2 }} / {{ shift_schedule_2 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 3 %}
+                                  <b>Bid ID:</b> {{ bid_id_3 }}<br>
+                                    <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                    <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_3 }} / {{ shift_schedule_3 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 4 %}
+                                <b>Bid ID:</b> {{ bid_id_4 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                  <b>Shift Schedule:</b> {{ shift_date_4 }} / {{ shift_schedule_4 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 5 %}
+                                    <b>Bid ID:</b> {{ bid_id_5 }}<br>
+                                    <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                    <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_5 }} / {{ shift_schedule_5 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 6 %}
+                                    <b>Bid ID:</b> {{ bid_id_6 }}<br>
+                                    <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                    <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_6 }} / {{ shift_schedule_6 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 7 %}
+                                  <b>Bid ID:</b> {{ bid_id_7 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_7 }} / {{ shift_schedule_7 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 8 %}
+                                  <b>Bid ID:</b> {{ bid_id_8 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_8 }} / {{ shift_schedule_8 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 9 %}
+                                  <b>Bid ID:</b> {{ bid_id_9 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_9 }} / {{ shift_schedule_9 }}<br><br>
+                                {% endif %}
+
+                                {% if n == 10 %}
+                                  <b>Bid ID:</b> {{ bid_id_10 }}<br>
+                                  <b>Staff Name:</b> {{ name|upper }}, {{ staff_type|upper }}<br>
+                                  <!--<b>Designation:</b> {{ staff_type|upper }}<br>-->
+                                    <b>Shift Schedule:</b> {{ shift_date_10 }} / {{ shift_schedule_10 }}<br><br>
+                                {% endif %}
+                              {% endfor %}
+                        </p>
+
+                          <p>
+                            <br>To view or cancel this bid, please login to your account in <a href="{{ protocol }}://{{ domain }}{% url 'bid_list' %}">{{ site_name }}</a>.
+                          </p>
+                        
+                        </div>
+                   
+                    </td>
+                  </tr>
+                  {% endif %}
+
+                </tbody>
+              </table>
+              </center>
+      
+            </div>
+          </div>
+          
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    </section>
+  </body>
+   
+</html>

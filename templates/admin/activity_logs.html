@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %} Activity Logs {% endblock %}
+{% block adminContent %}
+{% load static%}
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<style>
+    .setting-active {
+    border-left: 4px solid #92c83e;
+    padding-left: 16px;
+    background: #cfcfcfcf;    
+    }
+
+    .log-settings td {
+        font-size: 13px;
+    }
+
+</style>
+<div class="setting-container">
+    <div class="setting-menu">
+        <div class="card" style="width: 20rem;">
+            <div class="card-header"><h5>Settings</h5></div>
+            <ul class="list-group">
+                <a href="{% url 'settings_options' option='staff' %}">
+                <li class="list-group-item">
+                    View Designation
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/>
+                </li> 
+                </a>
+                <a href="{% url 'settings_options' option='facility' %}">
+                <li class="list-group-item">
+                    View Facility
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='schedule' %}">
+                <li class="list-group-item">
+                    View Schedule
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='reminder' %}">
+                <li class="list-group-item">
+                    View Reminder Settings 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'logs' %}">
+                    <li class="list-group-item setting-active">
+                    View Activity Logs 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <div>
+                <form id="dateform" class="form-inline my-2 my-lg-0" action="" enctype="multipart/form-data" method="POST">
+                    <div class="search-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <p> 
+                    {{field}}
+                    </p> 
+                     {% endfor %}
+                     <input type="button" id="clearDates" style="margin-left: 3px;
+                    background-image: url({% static 'img/reset.png' %});
+                    background-size: 22px 22px;
+                    background-repeat: no-repeat;
+                    height: 22px;
+                    width: 22px;
+                    border: none;"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <table class="table table-striped table-hover" style="overflow:auto;">
+                <thead>
+                <tr>
+                    <th scope="col" style="width:17%;">Log Date</th>
+                    <th scope="col" style="width:15%;">Performed By</th>
+                    <th scope="col" style="width:15%;">Affected Item</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                {% if all_logs|length > 0 %}
+                <tbody class="log-settings">
+                    {% for log in all_logs %}
+                    <tr>
+                        <td>{{ log.log_date|date:"Y-m-d" }} {{ log.log_date|time:"H:i" }}</td>
+                        <td>{{log.scheduler}}</td>
+                        <td>{{log.staff_id}}</td>
+                        <td>{{log.action}}</td>
+                    </tr>
+                    
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                <tr>
+                    <td>No log Available</td>
+                </tr>
+                {% endif %}            
+            </table>
+        </div>
+
+    </div>
+</div>
+<div class="flex justify-content-center align-self-center" >
+    <a href="{% url 'export_data' data='log'%}" style="font-size: 13px; color:#495057; margin-left:65%; ">Export Data</a>
+    <div>
+        <p> </p>
+    </div>
+</div>  
+{% endblock %}

@@ -1,0 +1,649 @@
+{% extends 'base.html' %}
+
+{% block title %} Bids List {% endblock %}
+
+{% block adminContent %}
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+{% load static %}
+
+<style>
+
+.container{
+
+    margin-top: 5px;
+}
+
+#id_facility_name, #id_first_name, #id_last_name, #id_shift_date, #id_bid_date, #id_staff_type  {
+    width: 100%;
+    margin-left:0px;
+    padding: 0.375rem 0.75rem;
+    font-size: small;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+.search-field{
+   margin: 5px;
+   width: 100%;
+} 
+
+.search-field label{
+    font-size: small;
+}
+
+.filter-form{
+    display: inline-flex; 
+    justify-content: center;
+    align-items: flex-end; 
+    width: 100%;
+}
+
+.filter-btn {
+    margin:5px;
+}
+
+.mt-4 {
+    margin-top: 0.5rem !important;
+}
+
+.pt-4 {
+    padding-top: 0.1rem !important;
+}
+
+@media only screen and (min-width: 451px) and (max-width: 991px){
+    .filter-form {
+        display: block;
+    }
+
+    .filter-form p {
+        margin-bottom: 0px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .search-field{
+        margin: 5px;
+        width: 100%;
+    } 
+
+    .filter-btn {
+        margin:5px;
+        text-align: right;
+    }
+
+}
+
+@media only screen and (max-width: 450px){
+    .filter-form {
+        display: block;
+    }
+
+
+    .filter-form p {
+        margin-bottom: 0px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .search-field{
+        margin: 5px;
+        width: 100%;
+    } 
+
+    .filter-btn {
+        margin:5px;
+        text-align: right;
+    }
+
+}
+
+
+.starability-result {
+  position: relative;
+  width: 75px;
+  height: 15px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAA8CAMAAABGivqtAAAAxlBMVEUAAACZmZn2viTHuJ72viOampqampr1viSampr3vySampqdnZ34wiX1vSSampr1vSOZmZmampr1viT2vSOampr2viT2viSampr2viSampr2vyX4vyWbm5v3vSSdnZ32wSadnZ36wCWcnJyZmZn/wSr/2ySampr2vSP2viSZmZn2vSSZmZn2vST2viSampr2viSbm5ubm5uZmZn1vSSampqbm5v2vSWampqampr3vSf5wiT5vyagoKD/xCmkpKT/yCSZmZn1vSO4V2dEAAAAQHRSTlMA+vsG9fO6uqdgRSIi7+3q39XVqZWVgnJyX09HPDw1NTAwKRkYB+jh3L6+srKijY2Ef2lpYllZUU5CKigWFQ4Oneh1twAAAZlJREFUOMuV0mdzAiEQBmDgWq4YTWIvKRqT2Htv8P//VJCTGfYQZnw/3fJ4tyO76KE0m1b2fZu+U/pu4QGlA7N+Up5PIz9d+cmkbSrSNr9seT3GKeNYIyeO5j16S28exY5suK0U/QKmmeCCX6xs22hJLVkitMImxCvEs8EG3SCRCN/ViFPqnq5epIzZ07QJJvkM9Tkz1xnkmXbfSvR7f4H8AtXBkLGj74mMvjM1+VHZpAZ4LM4K/LBWEI9jwP71v1ZEQ6dyvQMf8A/1pmdZnKce/VH1iIsdte4U8VEtY23xOujxtFpWDgKbfjD2YeEhY0OzfjGeLyO/XfnNpAcmcjDwKOXRfU1IyiTRyEkaiz67pb9oJHJb9vVqKfgjLBPyF5Sq9T0KmSUhQmtiQrJGPHVi0DoSabj31G2gW3buHd0pY85lNdcCk8xlNDPXMuSyNiwl+theIb9C7RLIpKvviYy+M6H8qGwSAp6Is19+GP6KxwnggJ/kq6Jht5rnRQA4z9zyRRaXssvyqp5I6Vutv0vkpJaJtnjpz/8B19ytIayazLoAAAAASUVORK5CYII=");
+  font-size: 0.1em;
+  color: transparent;
+}
+
+.starability-result:after {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  height: 15px;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAA8CAMAAABGivqtAAAAxlBMVEUAAACZmZn2viTHuJ72viOampqampr1viSampr3vySampqdnZ34wiX1vSSampr1vSOZmZmampr1viT2vSOampr2viT2viSampr2viSampr2vyX4vyWbm5v3vSSdnZ32wSadnZ36wCWcnJyZmZn/wSr/2ySampr2vSP2viSZmZn2vSSZmZn2vST2viSampr2viSbm5ubm5uZmZn1vSSampqbm5v2vSWampqampr3vSf5wiT5vyagoKD/xCmkpKT/yCSZmZn1vSO4V2dEAAAAQHRSTlMA+vsG9fO6uqdgRSIi7+3q39XVqZWVgnJyX09HPDw1NTAwKRkYB+jh3L6+srKijY2Ef2lpYllZUU5CKigWFQ4Oneh1twAAAZlJREFUOMuV0mdzAiEQBmDgWq4YTWIvKRqT2Htv8P//VJCTGfYQZnw/3fJ4tyO76KE0m1b2fZu+U/pu4QGlA7N+Up5PIz9d+cmkbSrSNr9seT3GKeNYIyeO5j16S28exY5suK0U/QKmmeCCX6xs22hJLVkitMImxCvEs8EG3SCRCN/ViFPqnq5epIzZ07QJJvkM9Tkz1xnkmXbfSvR7f4H8AtXBkLGj74mMvjM1+VHZpAZ4LM4K/LBWEI9jwP71v1ZEQ6dyvQMf8A/1pmdZnKce/VH1iIsdte4U8VEtY23xOujxtFpWDgKbfjD2YeEhY0OzfjGeLyO/XfnNpAcmcjDwKOXRfU1IyiTRyEkaiz67pb9oJHJb9vVqKfgjLBPyF5Sq9T0KmSUhQmtiQrJGPHVi0DoSabj31G2gW3buHd0pY85lNdcCk8xlNDPXMuSyNiwl+theIb9C7RLIpKvviYy+M6H8qGwSAp6Is19+GP6KxwnggJ/kq6Jht5rnRQA4z9zyRRaXssvyqp5I6Vutv0vkpJaJtnjpz/8B19ytIayazLoAAAAASUVORK5CYII=");
+  background-position: 0 -15px;
+}
+
+.starability-result[data-rating="5"]::after {
+  width: 75px;
+}
+
+.starability-result[data-rating="4"]::after {
+  width: 60px;
+}
+
+.starability-result[data-rating="3"]::after {
+  width: 45px;
+}
+
+.starability-result[data-rating="2"]::after {
+  width: 30px;
+}
+
+.starability-result[data-rating="1"]::after {
+  width: 15px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 2), screen and (min-resolution: 192dpi) {
+  .starability-result {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAB4CAMAAACZ62E6AAABAlBMVEUAAACZmZmampr2vSObm5v/yiufn5+ampr1viP1viSZmZn2viOZmZmampqampr2viSampqampqcnJz5vyScnJz3wSf/wyn/xiujo6Oqqqr/0C/1vSOampr2viP2viOampr2viP2vST2viOampqampqampr1vyP3viSampr2vyT4vyX3viSbm5ubm5v5wCT8xSmgoKCampqampr3vyb2wiWenp72viOampqZmZmampr2viP2viP1viSampqbm5v2vyT3viObm5v4vyadnZ34wSSbm5v2viSZmZn2viP2vST2viP2viT1viOZmZn2viT2viX3viT3vyb2vyOZmZn1vSOZmZlNN+fKAAAAVHRSTlMA9uz4PQwS8O7r5+fTw4yMelw2MB0dFRELBgbS+/Hfu7uxqKWdg4N7ZmZMPi8pKRgPs0w7Nhb14drKw6Gck21tXkNDIyMZ1rDLycTBtaqVknlfV0sGP8ZwAAADW0lEQVRYw9zWvYqDQBSG4TPDoCAqKhYKQgoVLFaIgZCkiCBBUqVazv3fyu4aEXWdM85Uy779A+LP58AfTQgw73AwtxFiZIwbxMbUfuB3H4b49YNfZrbGodoI52+cm9hH9sbZwwAXOFbo2zjDsSzWxnecuuvaM8MpdtbEPs7y9azF5phZWrjERaWOPdpLbB81cICrgv3W4mvMLbU6RmFQeA5u5HhFEEbHLdWLsMxvHJXxW16Goh+ZqPyny1Az5j79SsCJoWHsBNAxQ9sNF26bWFuMC8v1LY+mmeTadjaqtaNnnXoxWBcde1nNWnzdb68xrOqvu22/MTzuPutujpJ122NvluSb8tTWk85CclDZQwLS0oa2TQpEKacsJy0kSJaQOKJxROKKxhWJ7zS+k9ijsUdim8Y2ZWNUFBP4pMKfOv8onX9WrsI5gd3VVLXtatxcuU0znGUHCUAS2DgrS6mT6hTzrXEjfIZj5Dk2xKkihqm4wKlQfQRqalhUP9UHo3FIPAG/Et44JVLsDDf0JHmB3OEByOwZES8hSAsviGjBdh3ylh6plmMnW4IyAUVJWcE/76vTell1EIaiMBwIAcWBA9GC0lIdKFXQQUsHVVCklN7ojf3+z3JOxYqK2TH555+K6CJJQtRbr9XtDmCnjH0AX9Va8J+liIMvDtRsCk2pEs6hKVexR2g7KuDihwt5a9MfprY0fkLXU9ZmFLpoJolN6GXKWWfZx0tHCocwKJSxC22ItYUEjmBUJHFjfYz1xQxlfaLiZsBExq2IPtbkNbLtOwwuGgjTLkH43mYtSzam7+1Bsr3nm5uExBQUozEh9V7N7uvmwZcqdpm0C6vJW63bZEuXtbrV2zpDzhrpYLBWMnY1mjV7JWFtMio7zbWniWFxvHnWm1yGxXmOPXP+L3YV2ysjnNhaZNeMcHPvuL27BMnVMaujljBAYyje4niH4g2ONyh+4PiB4gOODyjWcKxh1gZBNoJjEY4R/BLhF4IDEQ4QPBoEoyxH4+bxrUsHyxwxQlg0WHXqYifVLmo67cKY/UtaXFxBV26TLjuHrkp8BPJTMij1xQejdkgO24nf7dBOCRcbzQuNOR9Qs64GzzrfQa8It2oFAA6Zrga9xEeq1KHmLUHIiCAWInsg1x/MLqkMsItF8QAAAABJRU5ErkJggg==");
+    background-size: 15px auto;
+  }
+  .starability-result:after {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAB4CAMAAACZ62E6AAABAlBMVEUAAACZmZmampr2vSObm5v/yiufn5+ampr1viP1viSZmZn2viOZmZmampqampr2viSampqampqcnJz5vyScnJz3wSf/wyn/xiujo6Oqqqr/0C/1vSOampr2viP2viOampr2viP2vST2viOampqampqampr1vyP3viSampr2vyT4vyX3viSbm5ubm5v5wCT8xSmgoKCampqampr3vyb2wiWenp72viOampqZmZmampr2viP2viP1viSampqbm5v2vyT3viObm5v4vyadnZ34wSSbm5v2viSZmZn2viP2vST2viP2viT1viOZmZn2viT2viX3viT3vyb2vyOZmZn1vSOZmZlNN+fKAAAAVHRSTlMA9uz4PQwS8O7r5+fTw4yMelw2MB0dFRELBgbS+/Hfu7uxqKWdg4N7ZmZMPi8pKRgPs0w7Nhb14drKw6Gck21tXkNDIyMZ1rDLycTBtaqVknlfV0sGP8ZwAAADW0lEQVRYw9zWvYqDQBSG4TPDoCAqKhYKQgoVLFaIgZCkiCBBUqVazv3fyu4aEXWdM85Uy779A+LP58AfTQgw73AwtxFiZIwbxMbUfuB3H4b49YNfZrbGodoI52+cm9hH9sbZwwAXOFbo2zjDsSzWxnecuuvaM8MpdtbEPs7y9azF5phZWrjERaWOPdpLbB81cICrgv3W4mvMLbU6RmFQeA5u5HhFEEbHLdWLsMxvHJXxW16Goh+ZqPyny1Az5j79SsCJoWHsBNAxQ9sNF26bWFuMC8v1LY+mmeTadjaqtaNnnXoxWBcde1nNWnzdb68xrOqvu22/MTzuPutujpJ122NvluSb8tTWk85CclDZQwLS0oa2TQpEKacsJy0kSJaQOKJxROKKxhWJ7zS+k9ijsUdim8Y2ZWNUFBP4pMKfOv8onX9WrsI5gd3VVLXtatxcuU0znGUHCUAS2DgrS6mT6hTzrXEjfIZj5Dk2xKkihqm4wKlQfQRqalhUP9UHo3FIPAG/Et44JVLsDDf0JHmB3OEByOwZES8hSAsviGjBdh3ylh6plmMnW4IyAUVJWcE/76vTell1EIaiMBwIAcWBA9GC0lIdKFXQQUsHVVCklN7ojf3+z3JOxYqK2TH555+K6CJJQtRbr9XtDmCnjH0AX9Va8J+liIMvDtRsCk2pEs6hKVexR2g7KuDihwt5a9MfprY0fkLXU9ZmFLpoJolN6GXKWWfZx0tHCocwKJSxC22ItYUEjmBUJHFjfYz1xQxlfaLiZsBExq2IPtbkNbLtOwwuGgjTLkH43mYtSzam7+1Bsr3nm5uExBQUozEh9V7N7uvmwZcqdpm0C6vJW63bZEuXtbrV2zpDzhrpYLBWMnY1mjV7JWFtMio7zbWniWFxvHnWm1yGxXmOPXP+L3YV2ysjnNhaZNeMcHPvuL27BMnVMaujljBAYyje4niH4g2ONyh+4PiB4gOODyjWcKxh1gZBNoJjEY4R/BLhF4IDEQ4QPBoEoyxH4+bxrUsHyxwxQlg0WHXqYifVLmo67cKY/UtaXFxBV26TLjuHrkp8BPJTMij1xQejdkgO24nf7dBOCRcbzQuNOR9Qs64GzzrfQa8It2oFAA6Zrga9xEeq1KHmLUHIiCAWInsg1x/MLqkMsItF8QAAAABJRU5ErkJggg==");
+    background-size: 15px auto;
+  }
+
+}
+
+.tooltip1 {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+   }
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -2px;
+    left: 112%;
+}
+
+.tooltip1:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+</style>
+<div class="container">
+    <div style="background-color: #f1f1f1;">
+        <div class="card-body">
+            <form method="get" class="filter-form">
+                {% comment %}
+                    {{ bid_filter.form }}
+                {% endcomment %}
+
+                {% for field in bid_filter.form %}
+                    <p class="search-field">{{field.label_tag}}{{field}}</p>
+                {% endfor %}
+               
+               <p class="filter-btn">
+                <input type="submit" class="btn btn-outline-success btn-time"  value="Search" name="time" style="position:relative;font-size: small; ">
+                </p>
+                <p class="filter-btn">
+                <a href="{% url 'bid_list' %}"><input class="btn btn-outline-success btn-time" type="button" name="Clear" value="Clear" style="position:relative; font-size: small;"></a>
+
+               </p>
+            </form>
+           
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item">
+		  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#new" role="tab" aria-controls="home" aria-selected="true" style="color:blue">New</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#accepted" role="tab" aria-controls="profile" aria-selected="false" style="color:green">Confirmed</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#declined" role="tab" aria-controls="profile" aria-selected="false" style="color:red">Declined</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#all" role="tab" aria-controls="profile" aria-selected="false" style="color:rgb(3, 3, 5)">All</a>
+		</li>
+        <li class="nav-item">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="profile" aria-selected="false" style="color:rgb(235, 150, 22)">Summary</a>
+		</li>
+	</ul>
+
+        <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="new" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="card mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Bids List</h5>
+                            <a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'adhoc_bid' %}" style="color: #fff;
+                            background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Bid</a>
+                        </div>
+                        <div class="card-body">
+                           
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Facility</th>
+                                    <th scope="col">Shift Date</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Designation</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Bid Date</th>
+                                    <th scope="col">Bid Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                {% if all_bid|length > 0 %} 
+                                <tbody class="bid-shift">
+                                    {% for bid in all_bid %}
+                                    {% if bid.bid_status == 'New' %}
+                                        {% if bid.flag %} 
+                                            <tr style="background-color:rgb(238, 136, 35)">
+                                        {% endif %}
+                                            <th scope="row">{{bid.facility_name}}</th>
+                                            <td>{{bid.shift_date}} </td>
+                                            <td>{{bid.shift_schedule}}</td>
+                                            <td>{{bid.staff_type}}</td>
+                                            <td>
+                                                <div class="tooltip1">{{bid.first_name }} {{bid.last_name }}
+                                                    <span class="tooltiptext">Rating: {{bid.percentage|floatformat:1}}%</span>
+                                                </div>
+                                                <fieldset class="starability-result" data-rating="{{bid.rating|floatformat:0}}">
+                                                    Rated: {{bid.rating}} stars
+                                                </fieldset>
+                                            </td>
+                                            <td>{{bid.submitted_date |date:'Y-m-d H:i' }}</td>
+                                            <td>{{bid.bid_status}}</td>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="deleteModalToggle{{bid.bid_id}}" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalToggleLabel">Decline Bid: {{bid.bid_id}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="{% url 'bid_shift_action' id=bid.bid_id action='Decline' %}">
+
+                                                            <!-- Security token by Django -->
+                                                            {% csrf_token %}
+                                                            <p><label for="reason">Reason:</label></p>
+                                                            <textarea id="reason" name="reason" rows="4" cols="45"></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input class="btn btn-success" type="submit" value="Yes" />
+                                                        <a href="{% url 'bid_list' %}"><input class="btn btn-secondary" type="button" name="No" value="No"></a>
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>                                      
+                                            <td class="menu-dropdown">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Action
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'view_bid' id=bid.bid_id %}">View</a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}">Confirm</a></li>
+                                                    <!--<li><a class="dropdown-item" href="{% url 'bid_shift_action' id=bid.bid_id action='Decline' %}">Decline</a></li>-->
+                                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{bid.bid_id}}">Decline</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="mobile-btn mobile-menu">
+                                                
+                                                    <a class="mobile-icon" href="{% url 'view_bid' id=bid.bid_id %}"><i class="fa-solid fa-eye"></i></a>
+                                                    <!-- <a class="mobile-icon" href=""><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                                    <!-- <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle"><i class="fa-solid fa-trash-can"></i></a> -->
+                                            
+                                                    <a class="mobile-icon" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}"><img style="width:21px;" src="{% static 'img/check-solid.png' %}"/></a>
+                                                
+                                                    <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{bid.bid_id}}"><img style="width:21px;" src="{% static 'img/x-solid.png' %}"/></a>
+                                            </td>
+
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                {% else %}
+                                    <tr>
+                                        <td>No bid Available</td>
+                                    </tr>
+                                {% endif %}  
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end tab -->
+
+            
+                <div class="tab-pane fade pt-4" id="accepted" role="tabpanel" aria-labelledby="accepted-tab">
+                    <div class="card mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Bids List</h5>
+                            <a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'adhoc_bid' %}" style="color: #fff;
+                            background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Bid</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Facility</th>
+                                    <th scope="col">Shift Date</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Designation</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Bid Date</th>
+                                    <th scope="col">Bid Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                {% if all_bid|length > 0 %} 
+                                <tbody class="bid-shift">
+                                    {% for bid in all_bid %}
+                                        {% if bid.bid_status == 'Confirmed' %}
+                                        <tr>
+                                            <th scope="row">{{bid.facility_name}}</th>
+                                            <td>{{bid.shift_date}} </td>
+                                            <td>{{bid.shift_schedule}}</td>
+                                            <td>{{bid.staff_type}}</td>
+                                            <td>{{bid.first_name }} {{bid.last_name }}</td>
+                                            <td>{{bid.submitted_date |date:'Y-m-d H:i' }}</td>
+                                            <td>{{bid.bid_status}}</td>
+                                            <td class="menu-dropdown">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Action
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'view_bid' id=bid.bid_id %}">View</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="mobile-btn mobile-menu">
+                                                
+                                                <a class="mobile-icon" href="{% url 'view_bid' id=bid.bid_id %}"><i class="fa-solid fa-eye"></i></a>
+                                                <!-- <a class="mobile-icon" href=""><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                                <!-- <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle"><i class="fa-solid fa-trash-can"></i></a> -->
+                                        
+                                                <!-- <a class="mobile-icon" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+                                            
+                                                <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{bid.bid_id}}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+                                                -->
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                {% else %}
+                                    <tr>
+                                        <td>No bid Available</td>
+                                    </tr>
+                                {% endif %}                                
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end tab -->
+
+
+                <div class="tab-pane fade pt-4" id="declined" role="tabpanel" aria-labelledby="accepted-tab">
+                    <div class="card mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Bids List</h5>
+                            <a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'adhoc_bid' %}" style="color: #fff;
+                            background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Bid</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Facility</th>
+                                    <th scope="col">Shift Date</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Designation</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Bid Date</th>
+                                    <th scope="col">Bid Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                {% if all_bid|length > 0 %} 
+                                <tbody class="bid-shift">
+                                    {% for bid in all_bid %}
+                                    {% if bid.bid_status == 'Declined' or bid.bid_status == 'Cancelled' %}
+                                        <tr>
+                                            <th scope="row">{{bid.facility_name}}</th>
+                                            <td>{{bid.shift_date}} </td>
+                                            <td>{{bid.shift_schedule}}</td>
+                                            <td>{{bid.staff_type}}</td>
+                                            <td>{{bid.first_name }} {{bid.last_name }}</td>
+                                            <td>{{bid.submitted_date |date:'Y-m-d H:i' }}</td>
+                                            <td>{{bid.bid_status}}</td>
+                                            <td class="menu-dropdown">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Action
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'view_bid' id=bid.bid_id %}">View</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="mobile-btn mobile-menu">
+                                                
+                                                <a class="mobile-icon" href="{% url 'view_bid' id=bid.bid_id %}"><i class="fa-solid fa-eye"></i></a>
+                                                <!-- <a class="mobile-icon" href=""><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                                <!-- <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle"><i class="fa-solid fa-trash-can"></i></a> -->
+                                        
+                                                <!-- <a class="mobile-icon" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}"><img style="width:21px;" src="{% static 'img/user-lock.png' %}"/></a>
+                                            
+                                                <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteModalToggle{{bid.bid_id}}"><img style="width:21px;" src="{% static 'img/user-unlock-green.png' %}"/></a>
+                                                -->
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </tbody>
+                                {% else %}
+                                    <tr>
+                                        <td>No bid Available</td>
+                                    </tr>
+                                {% endif %}  
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end tab -->
+
+                <div class="tab-pane fade pt-4" id="all" role="tabpanel" aria-labelledby="accepted-tab">
+                    <div class="card mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Bids List</h5>
+                            <a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'adhoc_bid' %}" style="color: #fff;
+                            background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Bid</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Facility</th>
+                                    <th scope="col">Shift Date</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Designation</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Bid Date</th>
+                                    <th scope="col">Bid Status</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                {% if all_bid|length > 0 %} 
+                                <tbody class="bid-shift">
+                                    {% for bid in all_bid %}
+                                        {% if bid.flag %} 
+                                            <tr style="background-color:rgb(238, 136, 35)">
+                                        {% endif %}
+                                            <th scope="row">{{bid.facility_name}}</th>
+                                            <td>{{bid.shift_date}} </td>
+                                            <td>{{bid.shift_schedule}}</td>
+                                            <td>{{bid.staff_type}}</td>
+                                            <td>{{bid.first_name }} {{bid.last_name }}</td>
+                                            <td>{{bid.submitted_date |date:'Y-m-d H:i' }}</td>
+                                            <td>{{bid.bid_status}}</td>
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="alldeleteModalToggle{{bid.bid_id}}" aria-hidden="true" aria-labelledby="alldeleteModalToggleLabel" tabindex="-1">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalToggleLabel">Decline Bid: {{bid.bid_id}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="{% url 'bid_shift_action' id=bid.bid_id action='Decline' %}">
+
+                                                            <!-- Security token by Django -->
+                                                            {% csrf_token %}
+                                                            <p><label for="reason">Reason:</label></p>
+                                                            <textarea id="reason" name="reason" rows="4" cols="45"></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input class="btn btn-success" type="submit" value="Yes" />
+                                                        <a href="{% url 'bid_list' %}"><input class="btn btn-secondary" type="button" name="No" value="No"></a>
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>                                      
+                                            <td class="menu-dropdown">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Action
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{% url 'view_bid' id=bid.bid_id %}">View</a></li>
+                                                    {% if bid.bid_status == 'New' %}
+                                                    <li><a class="dropdown-item" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}">Confirm</a></li>
+                                                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#alldeleteModalToggle{{bid.bid_id}}">Decline</a></li>
+                                                    {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="mobile-btn mobile-menu">
+                                                
+                                                <a class="mobile-icon" href="{% url 'view_bid' id=bid.bid_id %}"><i class="fa-solid fa-eye"></i></a>
+                                                <!-- <a class="mobile-icon" href=""><i class="fa-solid fa-pen-to-square"></i></a> -->
+                                                <!-- <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#deleteNotactiveModalToggle"><i class="fa-solid fa-trash-can"></i></a> -->
+                                        
+                                                <a class="mobile-icon" href="{% url 'bid_shift_action' id=bid.bid_id action='Confirm' %}"><img style="width:21px;" src="{% static 'img/check-solid.png' %}"/></a>
+                                                
+                                                <a class="mobile-icon" data-bs-toggle="modal" data-bs-target="#alldeleteModalToggle{{bid.bid_id}}"><img style="width:21px;" src="{% static 'img/x-solid.png' %}"/></a>
+                                      </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                {% else %}
+                                    <tr>
+                                        <td>No bid Available</td>
+                                    </tr>
+                                {% endif %}  
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end tab -->
+
+                <div class="tab-pane fade pt-4" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                    <div class="card mt-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Confirmed Bid Count</h5>
+                            <a type="button" class="btn btn-success flex justify-content-center align-self-center" href="{% url 'adhoc_bid' %}" style="color: #fff;
+                            background-color: #198754; border-color: #198754; -webkit-appearance: none; -moz-appearance: none; appearance: none;">Create Bid</a>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Facility</th>
+                                    <th scope="col">Shift Date</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Designation</th>
+                                    <th scope="col">Bid Status</th>
+                                    <th scope="col">Count</th>
+                                </tr>
+                                </thead>
+                                {% if bid_summary|length > 0 %} 
+                                <tbody class="bid-shift-summary">
+                                    {% for bid in bid_summary %}
+                                        <tr>
+                                   
+                                            <th scope="row">{{bid.facility_name}}</th>
+                                            <td>{{bid.shift_date}} </td>
+                                            <td>{{bid.shift_schedule}}</td>
+                                            <td>{{bid.staff_type}}</td>
+                                            <td>{{bid.bid_status}}</td>
+                                            <td>{{bid.total_count}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                {% else %}
+                                    <tr>
+                                        <td>No bid Available</td>
+                                    </tr>
+                                {% endif %}  
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!--end tab -->
+    </div>
+    <div class="flex justify-content-center align-self-center" >
+        <a href="{% url 'export_data' data='bid'%}" style="font-size: 13px; color:#495057; margin-left: 45%;">Export Data</a>
+    </div>
+</div>
+
+
+<script
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+crossorigin="anonymous">
+</script>
+<script>
+
+//$(":input").hover( function(e) {
+//	  $('body').append('<span id="list-tooltiptext" class="list-tooltiptext">Data Showing 30 Days Ahead</span>').show();
+//     $(".list-tooltiptext").css("display", "block");
+//   
+//   $('#list-tooltiptext').css( 'position', 'absolute' );
+//   $('#list-tooltiptext').css( 'top', '56px'  );
+//   $('#list-tooltiptext').css( 'left', '53%' );
+//   $('#list-tooltiptext').css( 'font-size', '12px' );
+//
+//}, function() {
+//       $(this).css('cursor','auto');
+//       $('#list-tooltiptext').remove()
+//	}
+//
+//)
+</script>
+
+{% endblock %}

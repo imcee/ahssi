@@ -1,0 +1,318 @@
+<!-- templates/shift/bid_shift_adhoc_form.html -->
+{% extends 'base.html' %}
+{% block title %} Adhoc Form {% endblock %}
+{% block adminContent %}
+
+{% load static %}
+<style>
+    #id_facility, #id_message, #id_username {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+
+    #id_staff_type{
+        display: flex;
+    }
+
+    #id_staff_type div {
+    padding-right: 60px;
+    }
+
+    #id_shift_date_month {
+        display: inline-block;
+        width: 30%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date_day {
+        display: inline-block;
+        width: 15%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date_year {
+        display: inline-block;
+        width: 20%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date {
+        display: inline-block;
+        width: 15%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 0.75rem 0.375rem 0.75rem;
+        line-height: 1.8;
+        color: #495057;
+        vertical-align: middle;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_schedule {
+        display: inline-block;
+        width: 15%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_notes {
+
+        color: #495057;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    @media only screen and (max-width: 991px){
+        #id_shift_schedule {
+        width: 60%;
+        }
+
+        #id_staff_type{
+        display: block;
+        }
+    }
+
+    
+    @media only screen and (max-width: 550px){
+        label {
+            display: block;
+        }
+
+        #id_shift_date_month {
+            display: inline-block;
+            width: 50%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_shift_date_day {
+            display: inline-block;
+            width: 20%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        #id_shift_date_year {
+            display: inline-block;
+            width: 30%;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            vertical-align: middle;
+            background: #fff url(https://ahssi-bucket.s3.amazonaws.com/static-portal/img/select-arrow.svg) no-repeat right 0.75rem center;
+            background-size: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    }
+   
+</style>
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+      <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      <!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% if user.is_superuser == 0 and user.is_staff == 0 %}
+    <style>
+        div#id_staff_type {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #id_staff_type{
+            display: block !important;
+        }
+
+        .hideRadio {
+            display: none;
+        }
+    </style>
+
+{% endif %}
+
+<div class="main container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                
+                {% if source == 'bid' %}
+                <h5 class="mb-0">Bid Shift Schedule</h5>
+                {% else %}
+                <h5 class="mb-0">Create Adhoc Shift</h5>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <!-- Create a Form -->
+            {{ facility_name }}
+            <form method="POST">
+                <!-- Security token by Django -->
+                {% csrf_token %}
+        
+                <!-- form as paragraph -->
+                {{ form.as_p }}
+                
+                <hr>
+                <div class="formBtn">
+                {% if source == 'bid' %}
+                    <input class="btn btn-success" type="submit" value="Bid" style="float: right;">
+                    <a href="{% url 'bid_list' %}"><input type="button" class="btn btn-secondary" name="Done" value="Done" style="float: right; margin-right: 15px;"></a>
+                {% else %}
+                    <input class="btn btn-success" type="submit" value="Create" style="float: right;">
+                    <a href="{% url 'shift_list' %}"><input type="button" class="btn btn-secondary" name="Done" value="Done" style="float: right; margin-right: 15px;"></a>
+                
+                {% endif %}
+
+                </div>
+            </form>
+        
+            </div>
+        </div>
+</div>
+
+<script>
+
+$(document).ready(function()
+ {
+    $('#id_username').select2({ width: '100%' });
+    $('#id_facility').select2({ width: '100%' });
+    
+    var csrf=$('input[name=csrfmiddlewaretoken]').val();
+
+    facility = $("#id_facility").val().length
+
+    if(facility < 1){
+        $("#id_shift_schedule").find("option").remove().end().append(
+                '<option value = "">Choose schedule</option>');
+    }
+
+    $('#id_facility').on('change', function () {
+        facility_cd=$(this).val()
+
+        $("#id_shift_schedule").find("option").remove().end().append(
+                '<option value = "">Choose schedule</option>');
+        
+        $.ajax({
+            url: "{% url 'load_schedule' %}",
+            method: "GET",
+            data:{
+                facility_cd:facility_cd,
+                csrfmiddlewaretoken:csrf
+            },
+            success:function(json){
+                $.each(json, function(key,value) {
+                    $("#id_shift_schedule").append('<option value="'+key+'">'+value+'</option>');
+                }); 
+
+               //divClone = $('#id_shift_schedule').find('option').clone();
+            },
+        })
+    })
+
+});
+</script>
+
+{% endblock %}

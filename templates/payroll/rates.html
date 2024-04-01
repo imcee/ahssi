@@ -1,0 +1,723 @@
+{% extends 'base.html' %}
+
+{% block title %} Staff List {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+}
+
+.setting-container-rate {
+    /*display: grid;*/
+    padding: 30px;
+    grid-template-columns: 1000px;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+.bghover:hover {
+    background-color: #edf0f2;
+}
+
+.logo:hover{
+    transform: scale(1.2);
+}
+
+.tab-content{
+
+	padding-left:10px;
+}
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 40%;
+}
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 45rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 30px !important;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+
+	text-align: left;
+	width: 100%;
+	margin:auto;
+	height: 40rem;
+	
+
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 20rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgba(43, 42, 42, 0.14) 0px 4px 20px 0px, rgba(13, 13, 14, 0.4) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(94, 95, 94), rgb(113, 115, 113));
+
+	
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+    .nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+    }
+
+    .card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.search-form {
+    margin-top: 30px;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    padding: 5px 1px;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+}
+
+table > thead > tr {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+    background-color: transparent;
+	font-size: 0.8rem;
+}
+
+#id_rate, #id_staff_type{
+	width: 4.8rem;
+	height:1.4rem;
+}
+
+#id_perdiem, #id_mileage_rate, #id_max_mileage_rate, #id_ot, #id_stat, #id_nic, #id_snp, #id_sales_tax{
+	width: 5rem;
+	height:1.4rem;
+
+}
+
+#id_facility_name, #id_remarks{
+	width: 18rem;
+	margin-top: 17.5px;
+}
+
+#id_col_1{
+	margin-left:148px;
+}
+
+#id_col_1, #id_col_2, #id_col_3, #id_col_4, #id_col_5, #id_col_6, #id_col_7, #id_col_8, #id_col_9, #id_col_10, #id_col_11{
+	width: 6.7rem;
+}
+
+#id_travel_time_hrs, #id_travel_time_mins, #id_travel_time_hrs_si, #id_travel_time_mins_si, #id_max_mileage, #id_si_mileage_limit, #id_ot_stat_rate_ic
+, #id_ot_stat_rate_si, #id_travel_rate_ic, #id_travel_rate_si, #id_distance_rate_ic, #id_distance_rate_si, #id_travel_time_roundoff{
+	width: 5rem;
+}
+
+#id_travel_time_roundup{
+	height: 25px;
+}
+.col-2 {
+    flex: 0 0 auto;
+    width: 11.666667%;
+    padding-bottom: 15px;
+}
+
+.row {
+
+	flex-wrap: unset;
+}
+
+
+.facility-settings td {
+    font-size: 13px;
+}
+
+.table td {
+	min-width: 230px;
+}
+
+.th-rate{
+	padding: 10px;
+	border-bottom: 1px solid rgba(211,211,211,1);
+	font-size: 15px;
+	text-align: right;
+	width: 20%;
+}
+
+.td-rate{
+	text-align: center;
+	padding: 13px;
+	font-size: 15px;
+	width: 15%;
+}
+
+.td-hide{
+	color: rgb(255, 255, 255);
+	color: rgba(255, 255, 255, 0.5);
+}
+
+
+.td-unit{
+
+	color:darkgrey;
+	width:10%;
+}
+
+.td-form{
+	text-align: left;
+	padding: 13.1px;
+	font-size: 14px;
+	width: 20%;
+	
+}
+
+
+table > th {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+
+.row-div{
+  margin-left:-5px;
+  margin-right:-5px;
+
+}
+
+.column {
+  float: left;
+  width: 95%;
+  padding: 0;
+  margin-left: 20px;
+
+}
+.column-form{
+  float: left;
+  width: 15%;
+}
+
+
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+</style>
+<div class="top-space">
+
+</div>
+<div>
+	<div>
+		<form class="form-inline my-2 my-lg-0" action="{% url 'rates' option=option id=0 %}">
+			<div class="search-form">
+				<input class="form-control mr-sm-2 mr-5 search-text" type="search" placeholder="Search Value" aria-label="Search" name="search">
+				<button title="Click again to show all staff" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="setting-container-rate">
+    <div class="setting-menu">
+
+
+
+	  	<div class="card-rd">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation" style="width:100%;">
+					<span class="nav-tabs-title">Rates:</span>
+					<div style="position:absolute; right:2%; margin:10px;"> 
+						<button type="submit" id="id_sync" class="btn_publish" style="background-color:transparent; border-color:transparent;"><img width="15" src="{% static 'img/sync-white.png' %}" alt="Sync" title="Sync User" class="logo" ></button>
+					</div>
+					<ul class="nav nav-tabs" id="navTab" role="tablist">
+						
+						<li class="nav-item">						
+							<a class="nav-link active" id="staff-tab" data-toggle="tab" href="#staff" role="tab" aria-controls="staff" aria-selected="true">Staff</a>
+							
+						</li>
+						<li class="nav-item">
+						  <a class="nav-link" id="rate-tab" data-toggle="tab" href="#rate" role="tab" aria-controls="rate" aria-selected="false" >General</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="facility-tab" data-toggle="tab" href="#facility" role="tab" aria-controls="facility" aria-selected="false" >Facility</a>
+						</li>
+						
+					</ul>
+		
+				</div>
+
+		   </div>
+
+
+		   <div class="card-body" style="overflow: auto;">
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="active-tab">
+		
+						<table style="border:collapse; width: 99%;">
+							<thead>
+								<tr>
+									<th scope="col" style="width:15%;">Username</th>
+									<th scope="col" style="width:20%;">First Name</th>
+									<th scope="col" style="width:20%;">Last Name</th>
+									<th scope="col" style="width:15%;">Designation</th>
+									<th scope="col" style="width:8%;">Rate</th>
+									<th scope="col" style="width:15%;"></th>
+								</tr>
+							</thead>
+							{% if all_staff|length > 0 %} 
+							<tbody>
+							
+								{% for staff in all_staff %}
+								<tr class="bghover">
+									<td>{{staff.username}}</td>
+									<td>{{staff.first_name}}</td>
+									<td>{{staff.last_name}}</td>
+									<td>{{staff.staff_type}}</td>
+
+									
+									<td {% if staff.rate <= 0 or staff.rate is None or staff.rate == "" %}style="color:red;"{% endif %}>{{staff.rate}}</td>
+				
+									
+									<td style="text-align:center;">
+									
+									{% url 'rates' 'staff' staff.id as path_url %}
+									{% if request.path == path_url %}
+
+										<form method="POST" action="{% url 'rates' option='staff' id=staff.id %}">
+				
+											{% csrf_token %}
+											{% for field in staffForm %}
+												{{ field }}
+											{% endfor %}
+											<a href="{% url 'rates' option='staff' id=0 %}"><img width="16" src="{% static 'img/cancel.png' %}" alt="Cancel" title="Cancel" class="logo logo-comment" style="position:relative; margin-left:10px;"></a>
+											<!--<input class="btn btn-success" type="submit" value="Update" name="staff" />-->
+											<input type="image" src="{% static 'img/check-green.png' %}" alt="Update" title="Update" name="staff" style="position:relative; width: 18px; vertical-align: middle;">
+										</form>
+									{% else %}
+								
+										{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %} 
+											<a href="{% url 'rates' option='staff' id=staff.id %}"><img width="14" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit" class="logo logo-comment" style="position:relative; margin-left:8px; align-content: flex-end;"><span style="font-size: 12px;"> Edit</span></a>
+											<!--<a data-bs-toggle="modal" data-bs-target="#editStaffModalToggle"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Rate" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>-->
+										</td>
+										{% endif %}
+									{% endif %}
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% else %}
+							<tr>
+								<td>No Staff Available</td>
+							</tr>
+
+						{% endif %}
+						</table>
+					</div>
+				
+
+					<div class="tab-pane fade" id="facility" role="tabpanel" aria-labelledby="facility-tab">
+						<table style="border:collapse; max-width: 120%; width: 120%; overflow-x: auto;">
+							<thead>
+								<tr>
+									<th scope="col">Facility Name</th>
+									<th scope="col">Paid Travel Time</th>
+									<th scope="col">Travel Time (SI)</th>
+									<th scope="col">Travel Time (NR)</th>
+									<th scope="col">Maximum Mileage (IC)</th>
+									<th scope="col">Maximum Mileage (SI)</th>
+									<th scope="col">OT/Stat Rate (IC)</th>
+									<th scope="col">OT/Stat Rate (SI)</th>
+									<th scope="col">Distance Rate (IC)</th>
+									<th scope="col">Distance Rate (SI)</th>
+									<th scope="col"></th>
+								</tr>
+
+							</thead>
+							{% if all_facility|length > 0 %} 
+							<tbody class="facility-settings">
+							
+								{% for facility in  all_facility %}
+
+								<tr class="bghover">
+
+									<td>{{facility.facility_name}}</td>
+									<td>{{facility.travel_time_hrs}}HRS {% if facility.travel_time_mins == None %} 0{% else %} {{facility.travel_time_mins}}{% endif %}MINS</td>
+									<td>{{facility.travel_time_hrs_si}}HRS {% if facility.travel_time_mins_si == None %} 0{% else %} {{facility.travel_time_mins_si}}{% endif %}MINS</td>
+									<td>{{facility.travel_time_roundup}}</td>
+									<td>{{facility.max_mileage}}</td>
+									<td>{{facility.si_mileage_limit}}</td>
+									<td>{{facility.ot_stat_rate_ic}}</td>
+									<td>{{facility.ot_stat_rate_si}}</td>
+									<td>{{facility.distance_rate_ic}}</td>
+									<td>{{facility.distance_rate_si}}</td>
+									
+									<td>
+									{% url 'rates' 'facility' facility.facility_cd as path_url %}
+									{% if request.path == path_url %}
+									<tr>
+										<form method="POST" action="{% url 'rates' option='facility' id=facility.facility_cd %}">
+									
+											{% csrf_token %}
+									
+											<div class="container-fluid">
+												<div class="row" style="font-size: 12px;">
+											
+													{% for fm in facilityForm %}
+													
+													<div class="col-2" id="id_col_{{ forloop.counter0 }}">
+														<label >{{fm.label}}</label>
+														{{fm}}
+													</div>
+													{% endfor %}
+								
+												</div>
+											</div>
+									
+											<div style="text-align: right; width: 117%;">
+											<a href="{% url 'rates' option='facility' id=0 %}"><img width="16" src="{% static 'img/cancel.png' %}" alt="Cancel" title="Cancel" class="logo logo-comment" style="position:relative; margin-left:10px;"></a>
+											<!--<input class="btn btn-success" type="submit" value="Update" name="staff" />-->
+											<input type="image" src="{% static 'img/check-green.png' %}" alt="Update" title="Update" name="facility" style="position:relative; width: 18px; vertical-align: middle;">
+										</div>
+										</form>
+									</tr>
+									{% else %}
+										{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %} 
+										
+											<a href="{% url 'rates' option='facility' id=facility.facility_cd %}"><img width="14" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit" class="logo logo-comment" style="position:relative; margin-left:8px; align-content: flex-end;"><span style="font-size: 12px;"> Edit</span></a>
+											<!--<a data-bs-toggle="modal" data-bs-target="#editStaffModalToggle"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Rate" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>-->
+										
+										{% endif %}
+									{% endif %}
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% else %}
+							<tr>
+								<td>No Facility Available</td>
+								<div class="flex justify-content-center align-self-center" style="margin-top: 20px; margin-bottom: 20px;">
+									<a href="{% url 'settings_options' option='facility' %}" style="font-size: 13px; color:#495057; margin-left: 45%;">Facility Settings</a>
+								</div>
+							</tr>
+
+						{% endif %}
+						</table>
+						
+					</div>
+
+
+					<div class="tab-pane fade" id="rate" role="tabpanel" aria-labelledby="rate-tab">
+						<div class="row-div">
+							<div class="column">
+							<table style="border:collapse; width: 100%;">
+
+							{% if all_rate|length > 0 %} 
+								{% for rate in all_rate %}
+								<tr class="bghover">
+								<th scope="row" class="th-rate">{{rate.column}}</th>
+								<td class="td-rate">{{rate.value}}</td>
+								<td class="td-unit">{{rate.units}}</td>
+								<td class="td-form">
+
+									{% url 'rates' 'gen' rate.id as path_url %}
+									{% if request.path == path_url %}
+
+										<form method="POST" action="{% url 'rates' option='gen' id=rate.id %}">
+				
+											{% csrf_token %}
+											{% for field in rateForm %}
+												{{ field }}
+											{% endfor %}
+											<a href="{% url 'rates' option='gen' id=0 %}"><img width="16" src="{% static 'img/cancel.png' %}" alt="Cancel" title="Cancel" class="logo logo-comment" style="position:relative; margin-left:10px;"></a>
+											<!--<input class="btn btn-success" type="submit" value="Update" name="staff" />-->
+											<input type="image" src="{% static 'img/check-green.png' %}" alt="Update" title="Update" name="rate" style="position:relative; width: 18px; vertical-align: middle;">
+										</form>
+									{% else %}
+								
+										{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %} 
+										
+											<a href="{% url 'rates' option='gen' id=rate.id %}"><img width="14" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit" class="logo logo-comment" style="position:relative; margin-left:8px; align-content: flex-end;"><span style="font-size: 12px;"> Edit</span></a>
+											<!--<a data-bs-toggle="modal" data-bs-target="#editStaffModalToggle"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Rate" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>-->
+										</td>
+										{% endif %}
+									{% endif %}
+
+
+
+								</td>
+								</tr>
+								{% endfor %}
+							</table>
+
+						  	</div>
+				
+							{% else %}
+							<tr>
+								<td>No Rates Defined</td>
+							</tr>
+							{% endif %} 
+					</div>
+
+				
+
+				</div>
+			
+			</div>
+	   	</div>
+
+	</div>
+	
+</div>
+
+<script>
+    $(document).ready(function()
+    {
+		var csrf=$('input[name=csrfmiddlewaretoken]').val();
+
+		$('#id_sync').on('click', function () {
+			$.ajax({
+				url: "{% url 'rates' option='sync' id=0 %}",
+				method: "GET",
+				data:{
+					sync: 'True',
+					csrfmiddlewaretoken:csrf
+				},
+				success:function(json){
+					location.reload();
+				}
+			})
+		})
+
+    });
+
+
+</script>     
+{% endblock %}
+
+

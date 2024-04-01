@@ -1,0 +1,135 @@
+<!-- admin/admin_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Admin Profile {% endblock %}
+
+{% block navigation %}
+    {% include 'loggedin_nav.html' %}
+{% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<!--Main Content -->
+<div class="container">
+    <div class="main-body">
+   
+          <div class="row gutters-sm">
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img class="w-32 h-32 md:h-auto rounded-full" src="{{ user.image.url }}" alt="Image" class="rounded-circle" width="150">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Username</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.username}}
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{user.email}}
+                        </div>
+                      </div>
+                      <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.first_name}} {{user.last_name}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Birthday</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.birth_date}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Phone</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.contact_number}}
+                    </div>
+                  </div>
+                  <hr>
+                 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.address}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Gender</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.gender_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Designation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.staff_type_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Login</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{user.last_login}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-12 button">
+                      <a class="btn btn-success user-btn" target="_self" href="{% url 'update_user_profile' %}">Edit</a>
+                      <a class="btn btn-success user-btn" target="_self" href="{% url 'password_change' %}">Change Password</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+ 
+<!--Main Content-->
+{% endblock %}

@@ -1,0 +1,436 @@
+
+{% extends 'base.html' %}
+
+{% block title %} Email Shift {% endblock %}
+
+{% block adminContent %}
+{% load static %}
+<style>
+    #id_facility_name, #id_message, #id_add_message, #id_facility_name_adhoc, #id_add_message_adhoc {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+
+    #id_staff_type, #id_shift, #id_schedule, #id_staff_type_adhoc,#id_schedule{
+        display: flex;
+    }
+
+    #id_staff_type div, #id_shift div,  #id_staff_type_adhoc div, #id_schedule div{
+        display: flex;
+    }
+
+    div#id_staff_type label, div#id_shift label, div#id_staff_type_adhoc label{
+        margin-right: 60px;
+    }
+
+    div#id_schedule label{
+        margin-right: 22px;
+    }
+
+    div#id_shift label{
+        margin-right: 70px;
+    }
+
+    .shift_field {
+        width:50%;
+    }
+    .field_date {
+        display: none;
+    }
+    .field_schedule {
+        display: none;
+    }
+ 
+    #id_shift_date_month {
+        display: inline-block;
+        width: 30%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date_day {
+        display: inline-block;
+        width: 20%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date_year {
+        display: inline-block;
+        width: 25%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_date {
+        display: inline-block;
+        width: 45%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 0.75rem 0.375rem 0.75rem;
+        line-height: 1.8;
+        color: #495057;
+        vertical-align: middle;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #id_shift_schedule {
+        display: inline-block;
+        width: 45%;
+        height: calc(2.25rem + 2px);
+        padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        line-height: 1.5;
+        color: #495057;
+        vertical-align: middle;
+        background: #fff url("{% static 'img/select-arrow.svg' %}") no-repeat right 0.75rem center;
+        background-size: 8px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    div .workspace{
+    padding: 0 20px;
+    }
+
+    @media only screen and (max-width: 991px){
+        #id_staff_type, #id_staff_type_adhoc, #id_shift, #id_schedule{
+        display: block;
+        }
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    .nav{
+        justify-content: flex-end;
+    }
+
+    #myTab {
+    margin-top: 0;
+    }
+
+</style>
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+ 
+        <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#non-adhoc" role="tab" aria-controls="home" aria-selected="true" style="color:blue">Regular</a>
+        </li>
+    
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#adhoc" role="tab" aria-controls="profile" aria-selected="false" style="color:green">Adhoc</a>
+        </li>
+
+    </ul>
+    <div class="tab-content" id="myTabContent">
+     <div class="tab-pane fade show active" id="non-adhoc" role="tabpanel" aria-labelledby="accepted-tab">
+       <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Email Shift Schedule</h5>
+        </div>
+        <div class="card-body">
+                <!-- Create a Form -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>
+                            {% for field in form %}
+
+                                {% if field.name != 'shift_date' and field.name != 'shift_schedule' %}
+                                <p> 
+                                    
+                                    {% if field.name == 'add_date' %}
+                                        {{field}}
+                                        {{field.label_tag}}
+
+                                    {% else %}
+                                        {{field.label_tag}}
+
+                                        {% if field.name == 'message' %}
+                                            {{form.media}}
+                                        {% endif %}
+
+                                        {{field|safe}}
+                                    {% endif %}
+
+                                    {% if field.help_text %}
+                                        <small style="color:grey;">{{field.help_text}}</small>
+                                    {% endif %}
+                    
+                                    {% for error in field.errors %}
+                                        <small style="color:red;">{{error}}</small>
+                                    {% endfor %}
+                                </p>
+                                {% else %}
+
+                                    {% if field.name == 'shift_date' %}
+                                    <p class="shift_schedule shift_field field_date">
+                                        
+                                            {{field.label_tag}}
+                                            {{field}}
+                                    
+                                        {% if field.help_text %}
+                                            <small style="color:grey;">{{field.help_text}}</small>
+                                        {% endif %}
+                        
+                                        {% for error in field.errors %}
+                                            <small style="color:red;">{{error}}</small>
+                                        {% endfor %}
+                                    </p>
+                                    
+                                    {% endif %}
+                                    {% if field.name == 'shift_schedule' %}
+                                        <p class="shift_schedule shift_field field_schedule">
+                                            
+                                                {{field.label_tag}}
+                                                {{field}}
+                                        
+                                            {% if field.help_text %}
+                                                <small style="color:grey;">{{field.help_text}}</small>
+                                            {% endif %}
+                            
+                                            {% for error in field.errors %}
+                                                <small style="color:red;">{{error}}</small>
+                                            {% endfor %}
+                                        </p>
+                                        
+                                    {% endif %}
+                                {% endif %}
+
+                            {% endfor %}
+                      
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+                <div class="formBtn">
+                    <button class="btn btn-success" type="submit" style="float: right;" name="regular" value="regular">Send</button>
+                    <a href="{% url 'bid_list' %}"><input class="btn btn-secondary" type="button" name="Done" value="Done" style="float: right; margin-right: 15px;"></a>
+                </div>
+            </form>
+    
+        </div>
+      </div>
+     </div>
+     <!---->
+
+     <div class="tab-pane fade" id="adhoc" role="tabpanel" aria-labelledby="accepted-tab">
+        <div class="card">
+         <div class="card-header d-flex justify-content-between align-items-center">
+             <h5 class="mb-0">Adhoc Shift Schedule</h5>
+         </div>
+         <div class="card-body">
+                 <!-- Create a Form -->
+             <form method="post" enctype="multipart/form-data">
+                 {% csrf_token %}
+                 <table style="width:90%;">
+                     <tr>
+                         <td>
+                         {% for field in adhocform %}
+                                 <p> 
+                                
+                                    {{field.label_tag}}
+                                    {{field|safe}}
+ 
+                                     {% if field.help_text %}
+                                         <small style="color:grey;">{{field.help_text}}</small>
+                                     {% endif %}
+                     
+                                     {% for error in field.errors %}
+                                         <small style="color:red;" id="id_error">{{error}}</small>
+                                     {% endfor %}
+                                 </p>
+
+                             {% endfor %}
+
+                         </td>
+                     </tr>
+                 </table>
+                 <hr>
+                 <div class="formBtn">
+                     <button class="btn btn-success" type="submit" style="float: right;" name="adhoc" id='id_adhoc' value="adhoc">Send</button>
+                     <a href="{% url 'bid_list' %}"><input class="btn btn-secondary" type="button" name="Done" value="Done" style="float: right; margin-right: 15px;"></a>
+                 </div>
+             </form>
+         </div>
+       </div>
+     </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function()
+    {
+        $('#id_facility_name').select2({ width: '100%' });
+        $('#id_facility_name_adhoc').select2({ width: '100%' });
+        $('#id_shift_schedule').select2({ width: '50%' });
+
+        var csrf=$('input[name=csrfmiddlewaretoken]').val();
+
+        //divClone = $("#id_schedule label").clone();
+        //$("#id_schedule label").replaceWith(divClone.clone(true));
+
+        facility = $("#id_facility_name_adhoc").val().length
+
+        if(facility < 1){
+            $('#id_schedule label').each(function() {
+                $(this).hide();
+            });
+        }
+
+        $('#id_facility_name_adhoc').on('change', function () {
+
+            $('#id_staff_type_adhoc input[type=checkbox]').prop('checked',false);
+            $('#id_schedule input[type=checkbox]').prop('checked',false);
+            $('#id_shift input[type=radio]').prop('checked',false);
+            $('#id_add_message_adhoc').val('')
+            
+            $('#id_schedule label').each(function() {
+                $(this).hide();
+            });
+
+            facility_cd=$(this).val()
+            
+            $.ajax({
+                url: "{% url 'load_schedule' %}",
+                method: "GET",
+                data:{
+                    facility_cd:facility_cd,
+                    csrfmiddlewaretoken:csrf
+                },
+                success:function(json){
+
+                    $.each(json, function(key,value) {
+
+                        var input_val = $("input[type=checkbox][value="+key+"]").val()
+                        var input_id = $("input[type=checkbox][value="+key+"]").attr('id')
+
+                        $('#id_schedule label[for="'+ input_id +'"]').show();
+
+                    }); 
+                },
+            })
+        })
+
+        $('#id_adhoc').on('click', function (e) {
+
+            if (!$("#id_staff_type_adhoc input[type=checkbox]").is(":checked")){
+                alert("Please Choose Designation")
+                e.preventDefault();
+                return false;
+            }
+            else if  (!$("#id_schedule input[type=checkbox]").is(":checked")){
+                alert("Please Choose Schedule")
+                e.preventDefault();
+                return false;
+            }
+           
+        });
+
+    });
+
+    
+    
+var checkbox = document.getElementById("id_add_date");
+var shiftSchedule = document.querySelectorAll("#adj_type");
+var fieldDate = document.querySelector(".field_date");
+var fieldSched = document.querySelector(".field_schedule");
+
+
+checkbox.addEventListener('change', function() {
+    if(this.checked) {
+        for(i=0; i<shiftSchedule.length; i++){
+                shiftSchedule[i].style.cssFloat = "left";
+            }
+        fieldDate.style.display = "block";
+        fieldSched.style.display = "block";
+        
+        document.getElementById("id_shift_date_month").required = true;
+        document.getElementById("id_shift_date_day").required = true;
+        document.getElementById("id_shift_date_year").required = true;
+        document.getElementById("id_shift_schedule").required = true;
+
+    } else {
+        for(i=0; i<shiftSchedule.length; i++){
+                shiftSchedule[i].style.cssFloat = "none";
+            }
+        fieldDate.style.display = "none";
+        fieldSched.style.display = "none";
+    }
+}
+);
+
+</script>
+
+
+{% endblock %}
+

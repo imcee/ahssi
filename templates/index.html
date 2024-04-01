@@ -1,0 +1,9 @@
+
+{% block content %}
+<div class="nav-links">
+    {% url 'login' as login_url %}
+    <span><a href="{{ login_url }}">AHSSI Portal</a></span><br>
+    <span><a href="ahssi.ca">AHSSI Website</a></span>
+
+  </div>
+{% endblock %}

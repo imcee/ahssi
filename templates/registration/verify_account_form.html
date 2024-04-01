@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Account Verification{% endblock %}
+
+{% block content %}
+<style>
+    .nav-links {
+        display:none;
+    }
+
+    .email, .code{
+      display: block;
+      width: 100%;
+      padding: 0.375rem 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+    }
+    .button {
+        display: flex;
+        justify-content: center;
+    }
+</style>
+
+<body style="background-color: #c2e5d3;">
+<section class="mt-5 py-5" style="background-color: #c2e5d3;">
+
+  <div class="container py-5 mt-5">
+    <div class="row d-flex justify-content-center align-items-center">
+      <div class="col-xl-6">
+        <div class="card rounded-3 text-black">
+          <div class="row g-0">
+            
+            <div class="col-lg">
+              <div class="card-body p-md-5 mx-md-4">
+
+                <div class="text-center py-2">
+                  
+                </div>
+                {% if messages %}
+                <ul class="messages">
+                    <!-- {% for message in messages %} -->
+                      <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    <!-- {% endfor %} -->
+                </ul>
+                {% endif %}
+                <form method="post">
+                  {% csrf_token %}
+                  <p>Please Enter your email and validation code</p>
+
+                    Email Address: <input type="text" name="email" class="email"><br><br>
+                    Validation Code : <input type="num" name = "code" class="code">
+                    <div class="button">
+                        <input class="btn btn-success mt-5" type="submit" value="Submit">
+                    </div>
+                    
+
+                </form>
+
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+    
+{% endblock %}

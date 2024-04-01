@@ -1,0 +1,263 @@
+{% load static %}
+<!doctype html>
+
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- css style -->
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+        <!--Font Awesome-->
+        <script src="https://kit.fontawesome.com/e09ba023b3.js" crossorigin="anonymous"></script>
+
+        <!--bootstrap-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+
+        <title>{% block title %} {% endblock %}</title>
+
+        {% block css %} {% endblock %}
+    
+    </head>
+    
+    <body>
+{% if user.is_authenticated %}
+    <!--Navbar-->
+
+    <header class="header sidebarOpen">
+
+        <div data-cy="ic-menu-toggle" class="header__button">
+            <button id="menu-toggle-button" title="Menu" class="header-icon-button">
+                <img width="22" src="{% static 'img/bars.png' %}" onmouseover="hoverBar(this)" onmouseout="unhoverBar(this);">
+            </button>
+        </div>
+
+        <div class="header__logo">
+            <a href="https://ahssi.ca" target="_blank" ><img src="{% static 'img/alliancehealthcare-smalll.png' %}" alt="Home" title="Home" class="logo" width="150px" style="margin-left:10px;"></a>
+        </div>
+
+        <!-- Endorsement Icon -->
+        {% if user.is_superuser or user.is_staff %}
+        <div class="header__button"> 
+            <li class="nav-item dropdown notification-section">
+                <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="true">
+                    <span><img width="25" src="{% static 'img/endorsement.png' %}" onmouseover="hoverEndorse(this)" onmouseout="unhoverEndorse(this);"><!--<i class='fa fa-bell notifications-toggle__icon'></i>--></span>
+                    <span class="badge" id="endorsement-badge">0</span>
+                </a>
+
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="endorsement-dropdown"
+                    data-popper-placement="bottom-end"
+                    style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+                    
+                    <span class="dropdown-item">Endorsements</span>
+                    <hr class="dropdown-divider">
+
+                    {% if endorsement|length > 0 %}   
+                        {% for i in endorsement %}
+                            <li class="dropdown-item">{{i.message}}</li>
+                            <hr class="dropdown-divider">
+                        {% endfor %}
+                    {% else %}
+                        <li class='dropdown-item'>0 items</li>
+                        <hr class="dropdown-divider">
+                    {% endif %}
+                </ul>
+
+            </li>
+        </div>
+        {% endif %}
+        <!-- Notificaton Icon -->
+        <div class="header__button"> 
+            <li class="nav-item dropdown notification-section">
+                <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="true">
+                    <span><img width="26" src="{% static 'img/notification.png' %}" onmouseover="hoverNotif(this)" onmouseout="unhoverNotif(this);"><!--<i class='fa fa-bell notifications-toggle__icon'></i>--></span>
+                    <span class="badge" id="notification-badge">0</span>
+                </a>
+
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                    data-popper-placement="bottom-end"
+                    style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+                    
+                    {% if notification|length > 0 %}   
+                        {% for i in notification %}
+                            <li class="dropdown-item">{{i.message}}</li>
+                            <hr class="dropdown-divider">
+                        {% endfor %}
+                    {% else %}
+                        <li class='dropdown-item'>No notifications</li>
+                        <hr class="dropdown-divider">
+                    {% endif %}
+                </ul>
+
+            </li>
+        </div>
+
+        <!-- Message Icon -->
+        <div class="header__button"> 
+            <li class="nav-item dropdown notification-section">
+                <a href="#" class="notification dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="true">
+                    <span><img width="26" src="{% static 'img/mail.png' %}" onmouseover="hoverMail(this)" onmouseout="unhoverMail(this);"> <!--<i class='fa-solid fa-envelope notifications-toggle__icon'>--></i></span>
+
+                    <span class="badge" id="notification-badge">0</span>
+                </a>
+
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="notifications-dropdown"
+                    data-popper-placement="bottom-end"
+                    style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(-70px, 42px, 0px);">
+                    
+                    {% if notification|length > 0 %}   
+                        {% for i in notification %}
+                            <li class="dropdown-item">{{i.message}}</li>
+                            <hr class="dropdown-divider">
+                        {% endfor %}
+                    {% else %}
+                        <li class='dropdown-item'>No messages</li>
+                        <hr class="dropdown-divider">
+                    {% endif %}
+                    
+                </ul>
+
+            </li>
+        </div>
+
+        <div class="header__button dropdown">
+            <button title="User Menu" id="userMenuButton" class="header-icon-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <!--<i aria-hidden="true" class="fa fa-user"></i>-->
+                <img width="20" src="{% static 'img/user.png' %}"  onmouseover="hoverUser(this)" onmouseout="unhoverUser(this);"/>
+                
+            </button>
+            <ul class="dropdown-menu topNav" style="border:none; padding: 0px;">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        <div class="row" style="--bs-gutter-x: 1.0rem;--bs-gutter-y: 0;
+                        display: flex;flex-wrap: wrap; margin-top: calc(-1 * var(--bs-gutter-y));
+                        margin-right: calc(-2 * var(--bs-gutter-x)); margin-left: calc(-.5 * var(--bs-gutter-x));">
+
+
+                            <div class="col-3 text-center">
+                               <img class="card-img-top" src="{{user.image.url}}" alt="Card image cap" style="width:60px; margin-top: 10px;">
+                            </div>
+                            <div class="col-6" style="align-items: center; margin-top: 10px;">
+                                <span style="text-transform:capitalize;font-weight: bold;">{{ user.first_name }} {{ user.last_name }}</span><br>
+                                <span style="text-transform:capitalize;font-size: 13px;color: gray;">{{ user.username }}</span>
+    
+                            </div>
+                        </div>
+
+                      </div>
+
+                    <div class="card-body">
+                        <li><a class="dropdown-item" href="{% url 'account' %}"><i class="fa-solid fa-user-nurse"></i>Profile</a></li>
+                        {% if user.is_superuser or user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'settings' %}"><i class="fa-solid fa-gear"></i>Settings</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'password_change' %}"><i class="fa-solid fa-gear"></i>Change Password</a></li>
+                        {% endif %}
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <p> </p>
+                        <li><a class="dropdown-item btn btn-success text-center" href="{% url 'logout' %}">Sign out</a>
+                            
+                        </li>
+                        <p> </p>
+                        
+                        
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </header>
+
+
+  <!--/.Navbar-->
+{% else %}
+  <div class="nav-links">
+    {% url 'index' as index_url %}
+    <span>{% if request.path == index_url %}Home{% else %}<a href="{{ index_url }}">Home</a>{% endif %}</span>
+    {% url 'about' as about_url %}
+    <span>{% if request.path == about_url %}About{% else %}<a href="{{ about_url }}">About</a>{% endif %}</span>
+    {% url 'contact' as contact_url %}
+    <span>{% if request.path == contact_url %}Contact{% else %}<a href="{{ contact_url }}">Contact</a>{% endif %}</span>
+    <span style="float:right">
+            <span><a href="{% url 'login' %}">Login</a></span>
+    </span>
+  </div>
+{% endif %}
+
+{{ room_name|json_script:"room-name" }}
+<script>
+    //REMOVE COMMENT FOR WEBSOCKET MESSAGING //
+
+    //const roomName = JSON.parse(document.getElementById('room-name').textContent)
+    //const notificationSocket = new WebSocket(
+    //    'ws://'
+    //    + window.location.host
+    //    + '/ws/notification/'
+    //    + roomName
+    //    + '/'
+    //);
+    //notificationSocket.onmessage = function(e) {
+    //    const data = JSON.parse(e.data);
+    //    //document.querySelector('#chat-log').value += (data.message + '\n');
+    //    console.log(data);
+    //    document.getElementById("notifications-dropdown").innerHTML = "<li class='dropdown-item'>" + data + "</li><hr class='dropdown-divider'>" + document.getElementById("notifications-dropdown").innerHTML;
+    //    document.getElementById("notification-badge").innerHTML = parseInt(document.getElementById("notification-badge").innerHTML) + 1;
+    //};
+//
+    //notificationSocket.onclose = function(e) {
+    //    console.error('Chat socket closed unexpectedly');
+    //};
+
+    function hoverBar(element) {
+        element.setAttribute('src', '{% static 'img/bars-black.png' %}')
+    }
+
+    function unhoverBar(element) {
+        element.setAttribute('src', '{% static 'img/bars.png' %}')
+    }
+
+    function hoverEndorse(element) {
+        element.setAttribute('src', '{% static 'img/endorsement-black.png' %}')
+    }
+
+    function unhoverEndorse(element) {
+        element.setAttribute('src', '{% static 'img/endorsement.png' %}')
+    }
+
+    function hoverNotif(element) {
+        element.setAttribute('src', '{% static 'img/notification-black.png' %}')
+    }
+
+    function unhoverNotif(element) {
+        element.setAttribute('src', '{% static 'img/notification.png' %}')
+    }
+
+    function hoverMail(element) {
+        element.setAttribute('src', '{% static 'img/mail-black.png' %}')
+    }
+
+    function unhoverMail(element) {
+        element.setAttribute('src', '{% static 'img/mail.png' %}')
+    }
+
+    function hoverUser(element) {
+        element.setAttribute('src', '{% static 'img/user-black.png' %}')
+    }
+
+    function unhoverUser(element) {
+        element.setAttribute('src', '{% static 'img/user.png' %}')
+    }
+
+    
+</script>
+{% block js %} {% endblock %}
+</body>
+
+
+</html>

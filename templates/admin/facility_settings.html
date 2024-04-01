@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %} Facility Settings {% endblock %}
+
+{% block adminContent %}
+{% load static%}
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<style>
+    .setting-active {
+    border-left: 4px solid #92c83e;
+    padding-left: 16px;
+    background: #cfcfcfcf;    
+    }
+    .facility-settings td {
+        font-size: 13px;
+    }
+
+    .search-form-facility {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: 20px;
+        margin-top:20px;
+    }
+
+    .table td {
+        min-width: 230px;
+    }
+    
+</style>
+<div class="setting-container">
+    <div class="setting-menu">
+        <div class="card" style="width: 20rem;">
+            <div class="card-header"><h5>Settings</h5></div>
+            <ul class="list-group">
+                <a href="{% url 'settings_options' option='staff' %}">
+                <li class="list-group-item">
+                    View Designation
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/>
+                </li> 
+                </a>
+                <a href="{% url 'settings_options' option='facility' %}">
+                <li class="list-group-item setting-active">
+                    View Facility
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='schedule' %}">
+                <li class="list-group-item">
+                    View Schedule
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='reminder' %}">
+                <li class="list-group-item">
+                    View Reminder Settings 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'logs' %}">
+                    <li class="list-group-item">
+                    View Activity Logs 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <div>
+                <form action = "" method="POST">
+                    <div class="search-form-facility">
+                            {% csrf_token %}
+                            {{form }}
+                            
+                    </div>
+                    <input type="submit" class="btn btn-outline-success settingAddBtn" style="float:right; margin-top: 20px; margin-right: 10px;" value="Add">
+                </form>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <table class="table table-striped table-hover" style="overflow-x: auto">
+                <thead>
+                <tr>
+                    <th scope="col">Facility Code</th>
+                    <th scope="col">Facility Name</th>
+                    <th scope="col">Facility Address</th>
+                    <th scope="col">Facility Schedule</th>
+                    <th scope="col">Paid Travel Time</th>
+                    <th scope="col">Travel Time (SI)</th>
+                    <th scope="col">Maximum Mileage (IC)</th>
+                    <th scope="col">Maximum Mileage (SI)</th>
+                    <th scope="col">OT/Stat Rate (IC)</th>
+                    <th scope="col">OT/Stat Rate (SI)</th>
+                    <th scope="col">Remarks</th>
+                    <th></th>
+                </tr>
+                </thead>
+            
+                    <tbody class="facility-settings">
+                    {% for d in data %}
+                    <tr>
+                        <td>{{d.facility_cd}}</td>
+                        <td>{{d.facility_name}}</td>
+                        <td>{{d.facility_address}}</td>
+                        <td>{{d.schedule_time}}</td>
+                        <td>{{d.travel_time_hrs}}HRS {{d.travel_time_mins}}MINS</td>
+                        <td>{{d.travel_time_hrs_si}}HRS {{d.travel_time_mins_si}}MINS</td>
+                        <td>{{d.max_mileage}}</td>
+                        <td>{{d.si_mileage_limit}}</td>
+                        <td>{{d.ot_stat_rate_ic}}</td>
+                        <td>{{d.ot_stat_rate_si}}</td>
+                        <td>{{d.remarks}}</td>
+                        <td class="actionBtndeedit menu-dropdown">
+                            <a href="{% url 'settings_remove' option='facility' id=d.facility_cd %}"><img src="{% static 'img/trash.png' %}" alt="Home" title="Home" class="logo"></a>&nbsp;&nbsp;
+                            <a href="{% url 'settings_update' option='facility' id=d.facility_cd %}"><img src="{% static 'img/pencil.png' %}" alt="Edit" title="Edit" class="logo"></a>
+                        </td>
+
+                        <td class="mobile-btn mobile-menu">
+                            <a href="{% url 'settings_remove' option='facility' id=d.facility_cd %}"><img style="width: 16px;" src="{% static 'img/trash.png' %}" alt="Home" title="Home" class="logo"></a>&nbsp;&nbsp;
+                            <a href="{% url 'settings_update' option='facility' id=d.facility_cd %}"><img style="width: 16px;" src="{% static 'img/pencil.png' %}" alt="Edit" title="Edit" class="logo"></a>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+                    </tbody>
+            
+            </table>
+        </div>
+
+    </div>
+        
+</div>
+{% endblock %}

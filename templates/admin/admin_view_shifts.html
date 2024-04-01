@@ -1,0 +1,274 @@
+<!-- user/user_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Shift Details {% endblock %}
+
+{% block navigation %}
+    {% include 'loggedin_nav.html' %}
+{% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+<style>
+  #cancellation_type{
+    width: 100%;
+    margin-left:0px;
+    padding: 0.375rem 0.75rem;
+    font-size: medium;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+</style>
+<!--Main Content -->
+<div class="container">
+    <div class="main-body">
+   
+          <div class="row gutters-sm">
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Shift ID</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{shift.shift_id}}
+                        </div>
+                      </div>
+                      <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Status</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.shift_status}}
+                    </div>
+                  </div>
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Facility Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.facility_name_id}}
+                    </div>
+                  </div>            
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Facility Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.facility_address}}
+                    </div>
+                  </div>            
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Date</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.shift_date}}
+                    </div>
+                  </div>  
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Schedule</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.shift_schedule_id}}
+                    </div>
+                  </div>    
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Time</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.schedule_time}}
+                    </div>
+                  </div>    
+                  <hr> 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Designation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.staff_type_id}}
+                    </div>
+                  </div>                    
+                  
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Username</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.username}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.first_name}} {{shift.last_name}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.email_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Bid ID</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.bid_id_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Acknowledgement</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.shift_confirmation_dt}}
+                    </div>
+                  </div>
+                  <hr>
+                 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Updated By</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.last_update_by}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Update Date</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.last_update_date}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Shift Reminder</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.shift_reminder_flag}}
+                    </div>
+                  </div>
+
+                  {% if shift.shift_status == 'Cancelled' %}
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Reason for Cancellation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.reason}}
+                    </div>
+                  </div>
+                  {% endif %}
+                  
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Notes</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{shift.notes}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-12 button">
+                      <a class="btn btn-success user-btn" href="{% url 'update_shift' id=shift.shift_id %}">Edit</a>
+                      {% if shift.shift_status == 'Pending Acknowledgement' %}
+                        <a class="btn btn-success user-btn" href="{% url 'confirm_shift' shift_id=shift.shift_id confirm='True' %}">Acknowledge</a>
+                      {% endif %}
+                      {% if shift.shift_status == 'Pending Acknowledgement' or shift.shift_status == 'Acknowledged' %}
+                        <a class="btn btn-secondary user-btn" data-bs-toggle="modal" data-bs-target="#cancelModalToggle">Cancel Shift</a>  
+                      {% elif shift.shift_status == 'Cancel Request' %}   
+                        <a class="btn btn-danger user-btn" href="{% url 'confirm_shift' shift_id=shift.shift_id confirm='False' %}">Cancel</a> 
+                        <a class="btn btn-success user-btn" href="{% url 'confirm_shift' shift_id=shift.shift_id confirm='True' %}">Do Not Cancel</a>     
+                      {% endif %}
+
+                      <a class="btn btn-success user-btn" href="{% url 'shift_list' %}">Done</a>
+                      <a class="btn btn-success user-btn" href="{% url 'shift_notes' id=shift.shift_id %}">Add Notes</a>
+                    </div>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="cancelModalToggle" aria-hidden="true" aria-labelledby="cancelModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalToggleLabel">Cancel Shift: {{shift.shift_id}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST" action="{% url 'confirm_shift' shift_id=shift.shift_id confirm='False' %}">
+
+                                    <!-- Security token by Django -->
+                                    {% csrf_token %}
+                                    Are you sure you want to cancel this shift? <br><br>
+                                    <label for="cancellation_type">Cancellation Type:</label>
+
+                                      <select name="cancellation_type" id="cancellation_type" required>
+                                          <option value="">---</option>
+                                          <option value="1">Staff Cancellation</option>
+                                          <option value="2">Non-Staff Cancellation</option>
+                                      </select>
+                                    <p><label for="reason">Reason:</label></p>
+                                    <textarea id="reason" name="reason" rows="4" cols="45" required></textarea>
+                            
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-success" type="submit" value="Yes" />
+                                <a href="{% url 'view_shifts' id=shift.shift_id %}"><input class="btn btn-secondary" type="button" name="No" value="No"></a>
+                            </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+ 
+<!--Main Content-->
+{% endblock %}

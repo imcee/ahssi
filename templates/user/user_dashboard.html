@@ -1,0 +1,471 @@
+<!-- admin/admin_dashboard.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Staff Dashboard {% endblock %}
+
+{% block navigation %}
+    {% include 'loggedin_nav.html' %}
+{% endblock %}
+
+{% block adminContent %}
+<style>
+    .dashboard{
+        margin: 20px;
+    }
+    .toconfirm-details{
+        margin-bottom: 20px;
+        margin-top: 40px;
+    }
+    .dash:link {
+      color: rgb(2, 2, 2);
+      background-color: transparent;
+      text-decoration: none;
+    }
+    .dash:visited {
+      color: rgb(2, 2, 2);
+      background-color: transparent;
+      text-decoration: none;
+    }
+    .dash:hover {
+      color: #506cb9;
+      background-color: transparent;
+      
+    }
+    .dash:active {
+      color: #92c83e;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+
+    .user-dashboard .upcoming-details .card, .user-dashboard  .toconfirm-details .card, .user-dashboard .announcements-details .card {
+        height: 340px;
+    }
+
+    .card-body{
+        overflow-y: scroll;
+        margin-top: 15px;
+    }
+
+
+    .toAnnounce{
+        text-align: center;
+        background-color: lightsalmon !important;
+    }
+
+    .endorse{
+        text-align: center;
+        color: #fff;
+        /* background-color: rgb(117, 218, 176) !important; */
+    }
+
+    .text {
+        display: block;
+        /* width: 500px; 
+        white-space: nowrap;*/
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /*Changes*/
+
+    .career-title h4 a {
+        color: #fff !important;
+    }
+
+    .card-rd {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0px;
+        height: 330px;
+        max-height: 35rem;
+        border: 0px;
+        margin-bottom: 30px;
+        margin-top: 50px;
+        border-radius: 6px;
+        color: rgb(51, 51, 51);
+        background: rgb(255, 255, 255);
+        width: 100%;
+        box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+         box-shadow: rgb(0 0 0 / 14%) 0px 1px 4px 0px;
+    }
+
+    .card-rd .card-body {
+        padding: 0px 8px !important; 
+        position: relative;
+    }
+
+    .card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+        border-radius: 3px;
+        margin-top: -20px;
+        padding: 15px;
+    }
+
+    .card-rd [class*="card-header-"] {
+        margin: 0px 15px;
+        padding: 0px;
+        position: relative;
+    }
+
+    .card-rd .card-header-primary-endorse:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary-endorse .card-text {
+        box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(76 175 80 / 40%);
+    }
+
+    .card-rd .card-header-primary-endorse:not(.card-header-icon):not(.card-header-text) {
+        background: linear-gradient(60deg,#66bb6a,#43a047);
+    }
+
+    .card-rd .card-header-primary-upcoming:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary-upcoming .card-text {
+        box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+    }
+
+    .card-rd .card-header-primary-upcoming:not(.card-header-icon):not(.card-header-text) {
+        background: linear-gradient(60deg, #26c6da, #00acc1);
+    }
+
+    .card-rd .card-header-primary-announcement:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary-announcement .card-text {
+        box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(255 152 0 / 40%);
+    }
+
+    .card-rd .card-header-primary-announcement:not(.card-header-icon):not(.card-header-text) {
+        background: linear-gradient(60deg,#ffa726,#fb8c00);
+    }
+
+    
+    .card-rd .card-header-primary-pending:not(.card-header-icon):not(.card-header-text), .card .card-header-primary-pending .card-text {
+        box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);    
+    }
+
+    .card-rd .card-header-primary-pending:not(.card-header-icon):not(.card-header-text) {
+        background: linear-gradient(60deg,#ef5350,#e53935);
+    }
+
+
+    .card-rd [class*="card-header-"], .card[class*="bg-"] {
+        color: rgb(255, 255, 255);
+    }
+
+    .card-rd .card-header {
+        border-bottom: inherit;
+    }
+
+    .card-rd .card-header.card-header-tabs .nav-tabs-title {
+        float: left;
+        padding: 10px 10px 10px 0px;
+        line-height: 24px;
+    }
+
+    
+
+    .card-rd .card-header.card-header-tabs .nav-tabs {
+        background: 0px 0px;
+        padding: 0px;
+    }
+
+    .card-rd a li {
+        border-top: none;
+        border-right: none;
+        border-left: none;
+        border-spacing: 2px;
+    }
+
+    table > tbody > tr > td {
+        padding: 0.4rem 0.2rem ; 
+        vertical-align: middle;
+        border-color: rgb(221, 221, 221);
+        border-bottom: 1px solid rgba(211,211,211,1);
+    }
+
+    table > tbody > tr:hover{
+        background-color: #ececec;
+    }
+
+    table {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 5px;
+        background-color: transparent;
+        font-size: 14px;
+    }
+
+
+    @media only screen and (min-width: 991px) and (max-width: 1500px){
+
+        .search-form {
+            display: block;
+        }
+
+        #id_staff_cd, #id_description, #id_schedule_cd, #id_facility_name, #id_facility_cd{
+            display: block;
+            width: 100%;
+            margin-left:0px;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+        }
+
+        .settingAddBtn{
+            float:right;
+            margin: 10px;
+        }
+
+        .user-dashboard .upcoming-details .card, .user-dashboard  .toconfirm-details  .card, .user-dashboard .announcements-details .card {
+            height: 200px;
+            
+        }
+
+        .card-body {
+            overflow-y: scroll;
+        }
+
+        table > tr > td{
+            border-bottom: 1px solid rgba(211,211,211,1);
+        }
+
+
+
+    }
+
+    @media only screen and (max-width: 990px){
+
+        .search-form {
+            display: block;
+        }
+
+        #id_staff_cd, #id_description, #id_schedule_cd, #id_facility_name, #id_facility_cd{
+            display: block;
+            width: 100%;
+            margin-left:0px;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+        }
+
+        .settingAddBtn{
+            float:right;
+            margin: 10px;
+        }
+
+        .user-dashboard .upcoming-details .card, .user-dashboard .toconfirm-details .card, .user-dashboard .announcements-details  .card {
+            height: 200px;
+          
+        }
+
+        .card-body-dashboard {
+            overflow-y: scroll;
+        }
+
+        .announcements-details {
+            margin-top: 20px;
+        }
+
+        table > tr > td{
+            border-bottom: 1px solid rgba(211,211,211,1);
+        }
+
+    
+
+
+    }
+
+    </style>
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+
+
+{% load static %}
+<!--Main Content -->
+<div class="dashboard">
+    <div class="toolbar ng-star-inserted">
+        <div class="toolbar__header ng-star-inserted">
+            <span class="ng-star-inserted">
+                {% now "g" as hours %}
+                {% now "A" as meridian %}
+
+                {% if meridian == 'AM' %}
+                    <h3>Good morning {{ user.first_name }}!</h3>
+                {% elif meridian == 'PM' and hours|add:"0" > 5 %}
+                    <h3>Good evening {{ user.first_name }}!</h3>
+                {% else %}
+                    <h3>Good afternoon {{ user.first_name }}!</h3>
+                {% endif %}
+
+            </span>
+
+        </div>
+    </div>
+    <hr>
+
+    <div class="row user-dashboard" style="margin-top:0px;">
+        <div class="col-lg-6">
+
+            <div class="upcoming-details">
+
+            <div class="card-rd">
+                <div class="card-header card-header-primary-upcoming upcoming">
+                    <div class="career-title"><h4><a class="dash" href="{% url 'shift_list' %}">Upcoming Shifts</a></h4></div>
+         
+                </div>
+                    <div class="card-body-dashboard" style="overflow-y: scroll;">
+                        <div class="main-text">
+                            {% if all_shift|length > 0 %}
+                                <table class="table table-hover">
+                                {% for shift in all_shift %}
+
+                                    <tr>
+                                        {% if forloop.counter0 == 0 %}
+                                            <td><img src="{% static 'img/play.png' %}"></td>
+                                            <td><b><a class="dash" href="{% url 'view_shifts' id=shift.shift_id%}">{{shift.shift_date}} / {{shift.shift_schedule_id}}<br>
+                                                {{shift.facility_name_id}}</a></b>
+                                            </td>
+                                        {% else %}
+                                            <td></td>
+                                            <td><a  class="dash" href="{% url 'view_shifts' id=shift.shift_id%}">{{shift.shift_date}} / {{shift.shift_schedule_id}}<br>
+                                                {{shift.facility_name_id}}</a>
+                                            </td>
+                                        {% endif %}
+                                    </tr>
+
+                                {% endfor %}
+                                </table>
+                            {% else %}
+                                <ul>No shifts scheduled</ul><br>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+         
+            </div>
+        </div>
+
+            <div class="toconfirm-details">
+                <div class="card-rd">
+                    <div class="card-header card-header-primary-pending toConfirm">
+                        <div class="career-title"><h4><a class="dash" href="{% url 'shift_list' %}">Pending Staff Acknowledgement</a></h4></div>
+                    </div>
+                
+                    <div class="card-body-dashboard" style="overflow-y: scroll;">
+
+                        <div class="main-text">
+                            {% if to_confirm|length > 0 %}
+                            <table class="table table-hover">
+                                {% for shift in to_confirm %}
+                                    <tr>
+                                        <td></td>
+                                        <td><a class="dash" href="{% url 'view_shifts' id=shift.shift_id%}"><b>{{shift.facility_name_id}}</b><br>
+                                            {{shift.shift_date}} / {{shift.shift_schedule_id}}</a>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </table>
+                            {% else %}
+                                <ul>All caught up</ul>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+            <div class="announcements-details">
+                <div class="card-rd">
+                    <div class="card-header card-header-primary-endorse endorse">
+                        <div class="career-title"><h4><a class="dash" href="{% url 'memo' id=0 search=None %}">Memo</a></h4></div>
+                    </div>
+               
+                    <div class="card-body-dashboard" style="overflow-y: scroll;">
+
+                        <div class="main-text">
+                            {% if all_memo|length > 0 %}
+                            <table class="table-hover">
+                                {% for memo in all_memo %}
+                                    <tr>
+                                       <td></td>
+                                        <td>
+                                            <div class="text" style="margin-left: 20px;">
+                                            <a class="dash" href="{% url 'memo' id=memo.id search=None%}">
+                                                <span style="color:black;"><b>{{ memo.title }}</b></span><br>
+                                                <span style="color:rgb(86, 84, 84); font-size: 12px;">{{ memo.message|safe|striptags }}<br>{{ memo.posted_dt }}</span>
+                                               
+                                            </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </table>
+                            {% else %}
+                                <ul>All caught up</ul>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toconfirm-details">
+                <div class="card-rd">
+                    <div class="card-header card-header-primary-announcement toAnnounce">
+                        <div class="career-title"><h4><a class="dash" href="#">Shift Announcements</a></h4></div>
+                    </div>
+                
+                    <div class="card-body-dashboard" style="overflow-y: scroll;">
+
+                        <div class="main-text">
+                            {% if all_email|length > 0 %}
+                            <table class="table table-hover">
+                                {% for email in all_email %}
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <b>{{email.facility_name}}</b> <br>
+                                            Designation: {{email.staff_type}}<br>
+                                            Posted Date: {{email.posted_dt}}
+
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                                </table>
+                            {% else %}
+                                <ul>No new shift announcements</ul>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!--Main Content-->
+{% endblock %}

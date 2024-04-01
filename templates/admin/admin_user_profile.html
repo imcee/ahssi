@@ -1,0 +1,207 @@
+<!-- user/user_profile.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} User Profile {% endblock %}
+
+{% block navigation %}
+    {% include 'loggedin_nav.html' %}
+{% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+
+{% load static %}
+
+<!--Main Content -->
+<div class="container">
+    <div class="main-body">
+   
+          <div class="row gutters-sm">
+
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex flex-column align-items-center text-center">
+                    <img class="w-32 h-32 md:h-auto rounded-full" src="{{ data.image.url }}" alt="Image" class="rounded-circle" width="150">
+                    
+                  </div>
+                </div>
+               
+              </div>
+              <div class="d-flex flex-column align-items-center text-center">
+                <div class="tooltip1">
+                  <span class="tooltiptext">
+                    Rating: {{staff_rating.percentage|floatformat:1}}%
+                  </span>
+                <fieldset class="starability-result mx-auto" data-rating="{{ staff_rating.rating|floatformat:0 }}">
+                  Rated: {{ staff_rating.rating }} stars 
+                </fieldset>
+              
+                </div>
+            </div>
+            </div>
+  
+           
+
+            <div class="col-md-8">
+              <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                          <h6 class="mb-0">Username</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{data.username}}
+                        </div>
+                      </div>
+                      <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.first_name}} {{data.last_name}}
+                    </div>
+                  </div>
+                  <hr>
+                  {% comment %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Rating</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      <div style="display: inline-flex;"><div style="font-size: 16px;">{{ staff_rating.percentage|floatformat:1 }}%</div>&nbsp;
+                     <fieldset class="starability-result" data-rating="{{ staff_rating.rating|floatformat:0 }}">
+                        Rated: {{ staff_rating.rating }} star(s)
+                      </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                  <hr>
+                  {% endcomment %}
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Birthday</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.birth_date}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.email}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Phone</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.contact_number}}
+                    </div>
+                  </div>
+                  <hr>
+                 
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Address</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.address}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Gender</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.gender_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Designation</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.staff_type_id}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Registration Number</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.registration_no}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Date Joined</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.date_joined}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Last Login</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.last_login}}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Created by</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{data.created_by}}
+                    </div>
+                  </div>
+                  <hr>        
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">Status</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {% if data.is_active %}Active {% else %}Inactive{% endif %}
+                    </div>
+                  </div>
+                  <hr>            
+                  <div class="row">
+                    <div class="col-sm-12 button">
+                      <a class="btn btn-success user-btn" href="{% url 'update' id=data.id %}">Edit</a>
+                      <a class="btn btn-success user-btn" href="{% url 'password_change_admin' id=data.id %}">Change Password</a>
+                      <a class="btn btn-success user-btn" href="{% url 'user_list_view' %}">Done</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+    </div>
+ 
+<!--Main Content-->
+{% endblock %}

@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+
+{% block title %} Staff List {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+}
+
+.setting-container {
+    display: grid;
+    padding: 30px;
+    grid-template-columns: 1000px;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+.setting-container .card-body {
+    margin-top: 0rem !important;
+}
+
+.bghover:hover {
+    background-color: #edf0f2;
+}
+
+.tab-content{
+
+	padding-left:10px;
+}
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 40%;
+}
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 35rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 20rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgba(43, 42, 42, 0.14) 0px 4px 20px 0px, rgba(13, 13, 14, 0.4) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(67, 160, 71), rgb(102, 187, 106));
+
+	
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+    .nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+    }
+
+    .card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.search-form {
+    margin-top: 30px;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+    background-color: transparent;
+	font-size: 0.9rem;
+}
+
+
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+</style>
+<div class="top-space">
+
+</div>
+<div>
+	<div>
+		<form class="form-inline my-2 my-lg-0" action="{% url 'rates' %}">
+			<div class="search-form">
+				<input class="form-control mr-sm-2 mr-5 search-text" type="search" placeholder="Search Value" aria-label="Search" name="search">
+				<button title="Click again to show all staff" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="setting-container">
+    <div class="setting-menu">
+
+
+		<!-- Modal Edit -->
+        {{id}}
+		<div class="modal fade" id="editStaffModalToggle{{id}}" aria-hidden="true" aria-labelledby="editStaffModalToggleLabel" tabindex="-1">
+			<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalToggleLabel">Edit Staff Rate</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form method="POST" action="#" enctype="multipart/form-data">
+		
+						{% csrf_token %}
+						{{ staffForm.as_p }}
+				</div>
+					<div class="modal-footer">
+						<input class="btn btn-success" type="submit" value="Update" name="staff" />
+						
+					</div>
+				  </form>
+				
+				</div>
+			</div>
+		</div>
+
+<!--
+	
+	  	<div class="card-rd" style="text-align: left; width: 80%; max-height: 35rem;">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation">
+					<div class="nav-tabs-wrapper">
+					<span class="nav-tabs-title">Rates:</span>
+					<ul class="nav nav-tabs" data-tabs="tabs">
+						<li class="nav-item">						
+							<a class="nav-link active" id="staff-tab" data-toggle="tab" href="#staff" role="tab" aria-controls="staff" aria-selected="true">Staff</a>
+						</li>
+						<li class="nav-item">
+						  <a class="nav-link" id="rate-tab" data-toggle="tab" href="#rate" role="tab" aria-controls="rate" aria-selected="false" >General</a>
+						</li>
+					</ul>
+					</div>
+				</div>
+
+		   </div>
+
+		   <div class="card-body" style="overflow: auto;">
+
+				<div class="tab-content" id="myTabContent">
+
+					<div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="active-tab">
+						
+						<table>
+							<thead>
+								<tr>
+									<th scope="col">Username</th>
+									<th scope="col">First Name</th>
+									<th scope="col">Last Name</th>
+									<th scope="col">Rate</th>
+								</tr>
+							</thead>
+							{% if all_staff|length > 0 %} 
+							<tbody>
+							
+								{% for staff in all_staff %}
+								<tr>
+									<td>{{staff.username}}</td>
+									<td>{{staff.first_name}}</td>
+									<td>{{staff.last_name}}</td>
+									<td>{{staff.rate}}</td>
+									{% if user.is_superuser or user.staff_type_id == 'AHSSI PAYROLL' %} 
+									<td>
+										<a data-bs-toggle="modal" data-bs-target="#editStaffModalToggle{{detail.id}}"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Rate" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>
+									</td>
+									{% endif %}
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% else %}
+							<tr>
+								<td>No Staff Available</td>
+							</tr>
+
+						{% endif %}
+						</table>
+
+					</div>
+				
+					<div class="tab-pane fade pt-4" id="rate" role="tabpanel" aria-labelledby="rate-tab">
+						<table>
+							<thead>
+								<tr>
+									<th scope="col">Username</th>
+									<th scope="col">First Name</th>
+									<th scope="col">Last Name</th>
+									<th scope="col">Rate</th>
+								</tr>
+							</thead>
+							{% if all_staff|length > 0 %} 
+							<tbody>
+							
+								{% for staff in all_staff %}
+								<tr>
+									<th scope="row">{{staff.username}}</th>
+									<td>{{staff.first_name}}</td>
+									<td>{{staff.last_name}}</td>
+									<td>{{staff.rate}}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+							{% else %}
+							<tr>
+								<td>No Staff Available</td>
+							</tr>
+
+						{% endif %}
+						</table>
+                    -->
+						<!-- <div class="comment" align="right" style="position:absolute; right:20px; bottom: 15px;"> -->
+						<div class="comment" align="right" style="margin-right:10px; margin-top: 350px;">
+
+							{% if user.is_superuser %} 
+
+								<a data-bs-toggle="modal" data-bs-target="#editStaffModalToggle{{detail.id}}"><img width="16" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Memo" class="logo logo-comment" style="position:relative; margin-right:8px;"></a>
+								
+							
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			
+			</div>
+	   	</div>
+
+	</div>
+	
+</div>
+
+  
+{% endblock %}
+
+

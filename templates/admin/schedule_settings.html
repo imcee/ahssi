@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %} Schedule Settings {% endblock %}
+{% block adminContent %}
+{% load static%}
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+
+<style>
+    .setting-active {
+    border-left: 4px solid #92c83e;
+    padding-left: 16px;
+    background: #cfcfcfcf;    
+    }
+    .schedule-settings td {
+        font-size: 13px;
+    }
+
+    @media only screen and (max-width: 790px){
+        .search-form {
+            display: block !important;
+        }
+    }
+
+</style>
+<div class="setting-container">
+    <div class="setting-menu">
+        <div class="card" style="width: 20rem;">
+            <div class="card-header align-items-center"><h5>Settings</h5></div>
+            <ul class="list-group">
+                <a href="{% url 'settings_options' option='staff' %}">
+                <li class="list-group-item">
+                    View Designation
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/>
+                </li> 
+                </a>
+                <a href="{% url 'settings_options' option='facility' %}">
+                <li class="list-group-item">
+                    View Facility
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='schedule' %}">
+                <li class="list-group-item setting-active">
+                    View Schedule
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'settings_options' option='reminder' %}">
+                <li class="list-group-item">
+                    View Reminder Settings 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>
+                <a href="{% url 'logs' %}">
+                    <li class="list-group-item">
+                    View Activity Logs 
+                    <img class="greater-than" width="30" src="{% static 'img/arrow.png' %}"/></li>
+                </a>          
+            </ul>
+        </div>
+    </div>
+
+    <div class="card" style="width: 100%;">
+        <div class="card-header">
+            <div>
+                <form action = "" method="POST">
+                    <div class="search-form">
+                            {% csrf_token %}
+                            {{form }}
+                            <input type="submit" class="btn btn-outline-success settingAddBtn" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Schedule Code</th>
+                    <th scope="col">Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+            
+                    <tbody class="schedule-settings">
+                    {% for d in data %}
+                    <tr>
+                        <td>{{d.schedule_cd}}</td>
+                        <td>{{d.description}}</td>
+                        <td class="menu-dropdown">
+                            <a href="{% url 'settings_remove' option='schedule' id=d.schedule_cd %}"><img src="{% static 'img/trash.png' %}" alt="Home" title="Home" class="logo"></a>
+                        </td class="menu-dropdown">
+                        <td class="mobile-btn mobile-menu">
+                            <a href="{% url 'settings_remove' option='schedule' id=d.schedule_cd %}"><img style="width:16px;" src="{% static 'img/trash.png' %}" alt="Home" title="Home" class="logo"></a>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+                    </tbody>
+            
+            </table>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

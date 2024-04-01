@@ -1,0 +1,614 @@
+{% extends 'base.html' %}
+
+{% block title %} Endorsements {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+   <!-- {% for message in messages %}-->
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    <!--{% endfor %}-->
+</ul>
+{% endif %}
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+}
+
+.setting-container {
+    display: grid;
+    padding: 30px;
+    grid-template-columns: 480px 1fr;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+
+.bghover:hover {
+    background-color: #dbe0e6;
+
+}
+
+
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 40%;
+}
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 40rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 30rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgb(0 0 0 / 14%) 0px 4px 20px 0px, rgb(156 39 176 / 40%) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(171, 71, 188), rgb(142, 36, 170));
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+    .nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+    }
+
+    .card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.search-form {
+    margin-top: 30px;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 30px;
+    background-color: transparent;
+}
+
+
+</style>
+
+<div>
+    <div >
+        <form id="dateform" action="" enctype="multipart/form-data" method="POST">
+            <div class="search-form">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <p> 
+                    {{field}}
+                </p> 
+                {% endfor %}
+                <input type="button" id="clearDates" style="margin-left: 3px;
+                    background-image: url({% static 'img/reset.png' %});
+                    background-size: 22px 22px;
+                    background-repeat: no-repeat;
+                    height: 22px;
+                    width: 22px;
+                    border: none;"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="setting-container">
+    <div class="setting-menu">
+        
+        <!-- Modal Add Endorsement -->
+        <div class="modal fade" id="addModalToggle" aria-hidden="true" aria-labelledby="addModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Add Endorsement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'endorsements' id=0 date=date %}">
+
+                        {% csrf_token %}
+                        
+                        {{ addform.media }}
+                        {{ addform.as_p|safe }}
+                        <!-- 
+                         <p><label for="reason">Title:</label>
+                            <textarea id="title" name="title" rows="1" cols="45" style="width:100%;" required></textarea></p>
+                        <p><label for="details">Details:</label>
+                            <textarea id="details" name="details" rows="10" cols="45" style="width:100%;" required></textarea></p>
+                        <p><label for="details">Auto Bid:</label>
+                            <input type="checkbox"></p>-->
+                         
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success" type="submit" value="Save" name="add_endorsement" />
+                   
+                </div>
+                </form>
+                
+            </div>
+            </div>
+        </div>
+
+     {% if detail != None %}
+        <!-- Modal Edit Endorsement -->
+        <div class="modal fade" id="editModalToggle{{detail.id}}" aria-hidden="true" aria-labelledby="editModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">Edit Endorsement</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'endorsements' id=detail.id date=date %}" enctype="multipart/form-data">
+                
+                            {% csrf_token %}
+                            {{ editform.media }}
+                            {{ editform.as_p|safe }}
+                    
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-success" type="submit" value="Update" />
+                    </div>
+                 </form>
+            
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal Add Comment -->
+        <div class="modal fade" id="commentModalToggle{{detail.id}}" aria-hidden="true" aria-labelledby="commentModalToggleLabel" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">Add Comment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url 'post_comment' id=detail.id date=date %}">
+                        {% csrf_token %}
+                        <textarea id="details" name="comment" rows="10" cols="45" style="width:100%;" required></textarea>
+                
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success" type="submit" value="Post" />
+                    <!--<a href="{% url 'endorsements' id=detail.id date=date %}"><input class="btn btn-secondary" type="button" name="Cancel" value="Cancel"></a>-->
+                </div>
+                </form>
+                
+            </div>
+            </div>
+        </div>
+
+
+     {% endif %}
+
+        <div class="card-rd" style="text-align: left; width: 30rem; margin-top: 30px; ">
+            <div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+                <div class="nav-tabs-navigation">
+                    <span class="nav-tabs-title">Endorsements:</span>
+                    <ul class="nav nav-tabs" id="navTab" role="tablist">
+
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="true">Pending</a>
+                          </li>
+                          <li class="nav-item">
+                            <a class="nav-link" id="complete-tab" data-toggle="tab" href="#complete" role="tab" aria-controls="completed" aria-selected="false" >Completed</a>
+                          </li>
+                    <!-- <li class="nav-item">
+                    <a class="nav-link active" href="#pending" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" >
+                    Pending
+                    <div class="ripple-container"></div>
+                    </a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#complete" data-toggle="tab" role="tab" aria-controls="home" aria-selected="false" >
+                    Completed
+                    <div class="ripple-container"></div> 
+                    </a>
+                    </li>-->
+                    </ul>
+                 
+                </div>
+  
+                <a data-bs-toggle="modal" data-bs-target="#addModalToggle"><img width="15" src="{% static 'img/plus-white.png' %}" alt="New" title="New Endorsement" class="logo"></a>
+
+            </div>
+            <div class="card-body" style="overflow: auto; margin-top:-20px;">
+                <div class="tab-content" id="myTabContent">
+
+	                <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="active-tab">
+                        {% if endorsements|length > 0 %} 
+                        <table>
+                            <tbody>
+                            
+                                {% for item in endorsements %}
+                                    {% url 'endorsements' id=item.id date=date as endorsements %}
+                                <tr>
+                                    {% if not item.completed %} 
+                                    <td>
+                                        <a class="bghover tool {% if request.path == endorsements %}endorse--active{% endif %}" href="{% url 'endorsements' id=item.id date=date %}#item-{{item.id}}"
+                                        style="margin-left: unset;">
+                                            <!-- PENDING TAB -->
+                                            <div class="text" align="left" style="line-height: 1em;" id="item-{{item.id}}">
+                                                <span style="color:black;padding-top: 0px;">{{ item.title }}</span><br>
+                                                <span style="color:gray; font-size: 12px;">{{ item.details|safe|striptags }}<br>
+                                                {{ item.posted_dt }}</span>
+                                            </div> 
+                                        </a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <a data-bs-toggle="modal" data-bs-target="#addModalToggle">
+                            <li class="list-group-item" style="margin-top:50px;">
+                                Add Endorsement
+                            </li> 
+                        </a>
+                    {% endif %}
+                    </div>
+                   
+                    <div class="tab-pane fade pt-4" id="complete" role="tabpanel" aria-labelledby="completed-tab">
+                    {% if endorsements|length > 0 %} 
+                        <table>
+                            <tbody>
+                            
+                                {% for item in endorsements %}
+                                    {% url 'endorsements' id=item.id date=date as endorsements %}
+                                <tr>
+                                    {% if item.completed %} 
+                                    <td>
+                                        <a class="bghover tool {% if request.path == endorsements %}endorse--active{% endif %}" href="{% url 'endorsements' id=item.id date=date %}#item-{{item.id}}"
+                                        style="margin-left: unset;">
+                                            <!-- COMPLETED TAB -->
+                                            <div class="text" align="left" style="line-height: 1em;" id="item-{{item.id}}">
+                                                <span style="color:black;padding-top: 0px;" class="d-flex justify-content-between"><span>{{ item.title }}</span><img width="15" src="{% static 'img/check-green.png' %}" alt="Complete" title="Completed" class="logo"></span><br>
+                                                <span style="color:gray; font-size: 12px;">{{ item.details|safe|striptags }}<br>
+                                                {{ item.posted_dt }}</span>
+                                            </div> 
+                                        </a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <a data-bs-toggle="modal" data-bs-target="#addModalToggle">
+                            <li class="list-group-item" style="margin-top:50px;">
+                                Add Endorsement
+                            </li> 
+                        </a>
+                    {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+           </div>
+        </div>
+   
+     {% if detail != None %}
+        <div>
+            <div class="card-rd-details card-endorse-details" style="margin-left: 10px; height: 25rem;">
+                <div class="card-header card-header-tabs card-header-primary-details d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0" style="padding: 9px;">{{detail.title}}</h5>
+    
+                    {% if detail.completed %} 
+                    
+                        <a href="{% url 'mark_endorsement' id=detail.id mark=0 date=date %}"><img width="13" src="{% static 'img/unlock.png' %}" alt="Reopen" title="Reopen" class="logo logo-comment"></a>
+                    {% else %}
+                        <a href="{% url 'mark_endorsement' id=detail.id mark=1 date=date %}"><img width="17" src="{% static 'img/check-white.png' %}" alt="Complete" title="Mark as Complete" class="logo"></a>
+                    {% endif %}
+                    
+    
+                </div>
+                <ul class="list-group">
+                
+                    <li class="list-group-endorse">
+                        <div class="text-endorse" align="left" style="line-height: 1em; overflow: auto; height: 19rem;">
+                            {% if detail.completed %} 
+                                <span style="color:gray; font-size: 12px;">Marked Complete by: <i>{{detail.updated_by}}</i> on <i>{{ detail.edit_dt }}</i></span><br><br>
+                            {% else %}
+                                {% if detail.edit_dt != None %} 
+                                    <span style="color:gray; font-size: 12px;">Updated by: <i>{{detail.updated_by}}</i> on <i>{{ detail.edit_dt }}</i></span><br><br>
+                                {% else %}
+                                    <span style="color:gray; font-size: 12px;">Created by: <i>{{detail.author}}</i> on <i>{{ detail.posted_dt }}</i></span><br><br>
+                                {% endif %}
+                            {% endif %}
+    
+                            <span style="color:black;font-size: 15px;">{{ detail.details|safe|linebreaks }}</span><br><br><br>
+                        </div>
+                        
+                            {% if not detail.completed %} 
+                            <div class="comment" align="right" style="margin-right: 20px">
+                                <a data-bs-toggle="modal" data-bs-target="#commentModalToggle{{detail.id}}"><img width="15" src="{% static 'img/comment.png' %}" alt="Comment" title="Add Comment" class="logo logo-comment" style="position:relative; margin-right:5px;"></a>
+                                <a data-bs-toggle="modal" data-bs-target="#editModalToggle{{detail.id}}"><img width="13" src="{% static 'img/pen-edit.png' %}" alt="Edit" title="Edit Endorsement" class="logo logo-comment"></a>
+                            </div>
+                            {% endif %}
+                        
+                   
+                    </li> 
+                    </ul>
+            </div>
+            <div class="card-rd-comment" style="margin-left: 10px; height: 14.8rem; overflow-y: scroll;">
+                    {% if comments|length > 0 %} 
+                        {% for comment in comments %}
+                            <ul>
+                                <li class="list-group-endorse">
+                                    <div class="text-endorse" align="left" style="line-height: 1em;">
+                                        <span style="color:gray; font-size: 12px;">Comment by: <i>{{comment.author}}</i> on <i>{{ comment.comment_dt }}</i></span><br><br>
+                                        <span style="color:black; font-size: 14px;line-height: 1.2em;">{{ comment.comment|safe }}</span><br><br><br>
+                                    
+                                    </div>
+    
+                                    {% if comment.author == current_user %} 
+                                        <div align="right" style="margin-right: 20px">
+                                            <a href="{% url 'delete_comment' id=comment.id date=date %}"><img width="11" src="{% static 'img/delete.png' %}" alt="Delete Comment" title="Delete Comment" class="logo logo-comment"></a>
+                                        </div>
+                                    {% endif %}
+                                    <hr>
+                                </li>
+                            </ul> 
+                        {% endfor %}
+                    {% else %}
+                    <ul>
+                        <li class="list-group-endorse">
+                            <div class="text-endorse" align="left" style="line-height: 0em;">
+                                <span style="color:gray; font-size: 12px;"><i>No comments yet</i></span>
+                            </div>
+                        </li>
+                    </ul> 
+                    {% endif %}
+            </div>
+        </div>
+        
+
+     {% else %}
+        <div class="card-rd card-endorse" style="margin-left:10px;">
+            <div class="d-flex justify-content-center align-items-center">
+                <h5 class="mb-0">
+
+                <p>
+                    Select an endorsement or add a new one
+                </p>
+                </h5>
+            </div>
+          
+        </div>
+
+     {% endif %}
+    </div>
+</div>
+
+<script>
+    $(function () {
+            var pathName = document.location.pathname;
+            window.onbeforeunload = function () {
+                var scrollPosition = $(document).scrollTop();
+                console.log(scrollPosition);
+                sessionStorage.setItem("scrollPosition_" + pathName, scrollPosition.toString());
+            }
+            if (sessionStorage["scrollPosition_" + pathName]) {
+                $(document).scrollTop(sessionStorage.getItem("scrollPosition_" + pathName));
+            }
+        });
+</script>
+
+{% endblock %}

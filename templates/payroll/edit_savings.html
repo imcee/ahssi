@@ -1,0 +1,571 @@
+{% extends 'base.html' %}
+
+{% block title %} Time Entry {% endblock %}
+
+{% block adminContent %}
+
+{% if messages %}
+<ul class="messages">
+  	<!-- {% for message in messages %} -->
+    	<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}
+             <a data-bs-toggle="modal" data-bs-target="#viewModalToggle">View</a>
+            
+        </li>
+	<!-- {% endfor %} -->
+</ul>
+{% endif %}
+
+{% load static %}
+<style>
+
+.messages{
+    position: fixed;
+}
+
+.btn-time{
+
+    font-size: 0.85rem;
+}
+
+#id_username, #id_first_name, #id_last_name {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.45rem;
+    font-size: 1rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #ececec;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+
+#id_savings_deduction, #id_savings_amt{
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.45rem;
+    font-size: 1rem !important;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+
+#id_status {
+    width: 40%;
+    height: 15px;
+}
+
+.setting-container-rate {
+    /*display: grid;*/
+    padding: 30px;
+    grid-template-columns: 1000px;
+}
+
+.tool {
+    max-width: 446px;
+    /*margin:0px;*/
+}
+
+.bghover:hover {
+    background-color: #edf0f2;
+}
+
+.tab-content{
+
+	padding-left:10px;
+    padding-right:10px;
+}
+.card-endorse{
+    /* text-align: left; */
+    position: relative;
+    /* left:150px;
+    width: 39rem; */
+    margin-top: 30px;
+    max-height: 35rem;
+    display: flex;
+    justify-content: center;
+
+}
+
+.card-endorse-details{
+    position: relative;
+    margin-top: 33px;
+    max-height: 35rem;
+    padding-left: 10px;
+}
+
+.list-group-item:hover {
+    background-color: rgb(206, 201, 201);
+}
+
+.list-group li{
+    word-wrap: break-word;
+}
+
+.list-group-item{
+    height: 5.5rem;
+}
+
+.text {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+}
+
+
+.logo-comment {
+
+    opacity: 0.7;
+}
+
+.modal-dialog{
+    max-width: 40%;
+}
+
+.cke_id_details{
+    width: 100%;
+}
+.cke1{
+    width: 100%;
+}
+
+.text-endorse{
+    padding: 20px;
+}
+
+/*Changes*/
+
+#cke_id_details{
+    width:100% !important;
+}
+
+.card-rd {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    /*max-height: 35rem;*/
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 30px !important;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+
+	text-align: left;
+	width: 100%;
+	margin:auto;
+	height: 50rem;
+	
+
+}
+
+.card-rd-comment {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 14.8rem;
+    border: 0px;
+    margin-bottom: 30px;
+    margin-top: 2px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd-details {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0px;
+    max-height: 20rem;
+    border: 0px;
+    /* margin-bottom: 30px; */
+    margin-top: 30px;
+    border-radius: 6px;
+    color: rgb(51, 51, 51);
+    background: rgb(255, 255, 255);
+    width: 100%;
+    box-shadow: rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    
+}
+
+.card-rd [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image), .card-rd-details [class*="card-header-"]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 3px;
+    margin-top: -20px;
+    padding: 15px;
+}
+
+
+.card-rd [class*="card-header-"], .card-rd-details [class*="card-header-"] {
+    margin: 0px 15px;
+    padding: 0px;
+    position: relative;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text), .card-rd .card-header-primary .card-text {
+    box-shadow: rgba(43, 42, 42, 0.14) 0px 4px 20px 0px, rgba(13, 13, 14, 0.4) 0px 7px 10px -5px;
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text), .card-rd-details .card-header-primary-details .card-text {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(0 188 212 / 40%);
+}
+
+.card-rd-details .card-header-primary-details:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #26c6da, #00acc1);
+}
+
+.card-rd [class*="card-header-"], .card[class*="bg-"], .card-rd-details [class*="card-header-"], .card[class*="bg-"]  {
+    color: rgb(255, 255, 255);
+}
+
+.card-rd .card-header {
+    border-bottom: inherit;
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs-title {
+    float: left;
+    padding: 10px 10px 10px 0px;
+    line-height: 24px;
+}
+
+.card-rd .card-header-primary:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, rgb(67, 160, 71), rgb(102, 187, 106));
+
+	
+}
+
+.card-rd .card-header.card-header-tabs .nav-tabs {
+    background: 0px 0px;
+    padding: 0px;
+}
+
+.card-rd a li {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-spacing: 2px;
+}
+
+.nav-tabs {
+    border: 0px;
+    border-radius: 3px;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0px;
+    margin-bottom: 0px;
+    list-style: none;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    background-color: rgba(255,255,255,.2);
+}
+
+.nav-tabs .nav-item .nav-link{
+    font-weight: 500;
+    border: 0px !important;
+    color: rgb(255, 255, 255) !important;
+    position: relative;
+    color: rgb(255, 255, 255);
+    border: 0px;
+    margin: 0px;
+    border-radius: 3px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 15px;
+    background-color: transparent;
+    transition: background-color 0.3s ease 0s;
+}
+
+.card .card-body {
+    padding: 0.9375rem 20px;
+    position: relative;
+}
+
+.search-form {
+    margin-top: 30px;
+}
+
+.endorse--active{
+    background: #daf0ff;
+}
+
+.list-group-item:hover{
+    background-color: #daf0ff;
+}
+
+table > tbody > tr > td {
+    padding: 5px 5px;
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 1px solid rgba(211,211,211,1);
+    text-align: center;
+}
+
+table > thead > tr {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 20px;
+    background-color: transparent;
+	font-size: 0.85rem;
+}
+
+
+
+.th-rate{
+	padding: 10px;
+	border-bottom: 1px solid rgba(211,211,211,1);
+	font-size: 15px;
+	text-align: right;
+	width: 20%;
+}
+
+.td-rate{
+	text-align: center;
+	padding: 13px;
+	font-size: 15px;
+	width: 15%;
+}
+
+.td-hide{
+	color: rgb(255, 255, 255);
+	color: rgba(255, 255, 255, 0.5);
+}
+
+
+.td-unit{
+
+	color:darkgrey;
+	width:10%;
+}
+
+.td-form{
+	text-align: left;
+	padding: 13.1px;
+	font-size: 14px;
+	width: 20%;
+	
+}
+
+
+table > th {
+    /* padding: 12px 8px; */
+    vertical-align: middle;
+    border-color: rgb(221, 221, 221);
+    border-bottom: 2px solid rgba(211,211,211,1);
+}
+
+
+.row-div{
+  margin-left:-5px;
+  margin-right:-5px;
+
+}
+
+.column {
+  float: left;
+  width: 95%;
+  padding: 0;
+  margin-left: 20px;
+
+}
+.column-form{
+  float: left;
+  width: 15%;
+}
+
+.errorlist{
+
+    /*background-color: #89c1e7;*/
+    background-color: #e57487;
+
+}
+	@media only screen and (max-width: 1000px) {
+		.setting-container {
+			grid-template-columns: 1fr !important;
+			grid-template-rows: 300px;
+			/* justify-items: center; */
+		}
+
+		.card-c{
+			display: flex;
+			justify-content: center;
+		}
+
+	}
+
+    @media only screen and (max-width: 991px){
+        #id_staff_type{
+        display: block;
+        }
+
+    }
+
+    .select2-container--default .select2-selection--single {
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+label{
+
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 7px;
+
+}
+
+form input:invalid, select:invalid, textarea:invalid {
+  border-color: red;
+}
+
+</style>
+<div class="top-space">
+
+</div>
+
+
+<div class="setting-container-rate">
+    <div class="setting-menu">
+
+	  	<div class="card-rd">
+		  	<div class="card-header card-header-tabs card-header-primary d-flex justify-content-between align-items-center">
+				<div class="nav-tabs-navigation">
+					<span class="nav-tabs-title">Edit Savings Election</span>
+					<ul class="nav nav-tabs" id="navTab" role="tablist">
+
+					</ul>
+		
+				</div>
+			
+		   </div>
+
+		   <div class="card-body" style="overflow-x: auto; margin-top: 30px;">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="staff" role="tabpanel" aria-labelledby="active-tab">
+
+                        <div style="text-align:center; ">
+                            <span style="text-align:center; font-size: 14px; font-weight: 200;">
+                                <p>
+                                
+                                <b>This edit form is for updating Savings Deduction only and will be applied on the next invoice. For any other savings related update, contact Payroll Admin.</b><br>
+                         
+                                </p> 
+                            </span>
+                    
+                        </div>
+                    
+
+                </div>
+            </div>
+
+            <hr>
+                <div style="overflow-x: auto; height: 145px;">
+                    <form method="POST" action="{% url 'edit_savings' username=data.username %}"  id="sheet-form">
+                        {% csrf_token %}
+                        
+                        {{ editform.form_errors.as_ul }}
+                        {{ editform.non_field_errors }}
+                      <table id="editform" class="form">
+                       
+                        <thead style="text-align: center;">
+          
+                         <tr>
+                          {% for field in editform.visible_fields %}
+                              <th>{{ field.label|capfirst }}</th>
+                          {% endfor %}
+                        </tr>
+                       </thead>
+                        <tr class="{% cycle row1 row2 %}">
+                        {% for field in editform.visible_fields %}
+                            
+                          <td>
+                          {# Include the hidden fields in the form #}
+                          {% if forloop.first %}
+                            {% for hidden in editform.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+                          {% endif %}
+                                {{ field }}
+                            <!--{{ field.errors.as_ul }}-->
+                           </td>
+                          
+                        {% endfor %}
+                        </tr>
+                      </table>
+                </div>
+
+                        <!-- style="position:relative; left: 88%;" -->
+                    <div style="position: relative; top:9px; left: 86%; max-width: 225px;">
+                        <a href="{% url 'savings' %}"><input class="btn btn-secondary btn-time" type="button" name="Cancel" value="Cancel" style="position:relative; "></a>
+                        <input type="submit" class="btn btn-outline-success btn-time"  value="Update" name="time" style="position:relative; ">
+
+                    </form>
+
+    
+                    </div>
+			</div>
+
+     
+	   	</div>
+          
+	</div>
+	
+</div>
+
+<script>
+
+    $(document).ready(function()
+        {
+            $('#id_username').select2({ width: '100%' });
+    
+        });
+
+</script>
+
+{% endblock %}
+
+

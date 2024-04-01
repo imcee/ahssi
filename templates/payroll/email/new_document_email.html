@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <body style="background-color: #c2e5d3; font-size: 16px;">
+    <section class="mt-5 py-5" style="background-color: #c2e5d3;">
+        <div class="container py-5 mt-5">
+          <div class="row d-flex justify-content-center align-items-center py-5 mt-5">
+      <div class="col-xl-6">
+        <div class="card rounded-3 text-black">
+        <div class="row g-0">
+          <div class="col-lg">
+            <div class="card-body p-md-5 mx-md-4">
+      
+              <center>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" style="height:100%; width:700px;">
+                  <!-- BEGIN EMAIL -->
+                  <tbody>
+                    <tr>
+                      <td align="left" style="padding:30px">
+                        <div style="background-color:#fff; padding:30px;">
+                          <p style="text-align:left">Hi {{ firstname }},<br><br>
+                            A new payroll document has been uploaded.<br><br>
+                            <b>Document Details:</b><br><br>
+                              <b>File Name:</b> {{ filename }} <br>
+                              <b>Upload Date:</b> {{ upload_date }} <br>
+                              <b>Comments:</b> {{ comments }}<br>
+
+                          </p>
+                          <p style="text-align:left"> 
+                            {% url 'payroll_docs' as payroll_docs_url %}
+                            To see more details, please login to your account in <a href="{{ protocol }}://{{ domain }}{{ payroll_docs_url }}">{{ site_name }}</a>.                               
+                            <br><br>
+                            Regards,<br>
+                            AHSSI Portal Admin
+                          </p> 
+  
+                        </div>
+                   
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              </center>
+      
+            </div>
+          </div>
+          
+        </div>
+        </div>
+      </div>
+      </div>
+    </div>
+    </section>
+  </body>
+   
+</html>
